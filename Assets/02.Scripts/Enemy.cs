@@ -18,8 +18,9 @@ public class Enemy : MonoBehaviour, IDamageable
     private Animator anim;
     private SpriteRenderer sr; //Flip하기 위해 
     private float attackTimer;
+    public GameObject goldPrefab; // 골드 프리팹
 
-    void Start()
+	void Start()
 	{
 		rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
@@ -90,10 +91,21 @@ public class Enemy : MonoBehaviour, IDamageable
     }
     public void TakeDamage(int damage)
 	{
-		Destroy(gameObject);
+        Die();
 	}
 
-    //적 범위 시각화입니당
+    public void Die()
+    {
+        if(anim != null)
+        {
+            anim.SetTrigger("Death");
+		}
+
+		Instantiate(goldPrefab, transform.position, Quaternion.identity); // 죽은 자리에 골드 소환
+		Destroy(gameObject, 0.5f);
+	}
+
+    //적 범위 시각화입니당 넹 ~
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;

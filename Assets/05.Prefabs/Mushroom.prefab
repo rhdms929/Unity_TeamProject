@@ -175,6 +175,11 @@ MonoBehaviour:
   speed: 1
   target: {fileID: 0}
   detectRange: 3
+  attackRange: 1
+  damage: 1
+  attackCooldown: 1
+  maxHP: 3
+  goldPrefab: {fileID: 6281161415433797268, guid: c22427ef514512b49b07882b31ed8360, type: 3}
 --- !u!95 &8377341455400588714
 Animator:
   serializedVersion: 5

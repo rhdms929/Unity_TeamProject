@@ -13,7 +13,7 @@ public class PlayerMovement : MonoBehaviour
 
 	// --- 전투 시스템 ---
 	public Transform attackPoint;      
-	public float attackRange = 0.5f;   // 공격 반경
+	public float attackRange = 0.3f;   // 공격 반경
 	public LayerMask enemyLayer;       // 공격이 닿을 수 있는 적 레이어
 	public int attackDamage = 10;
 
@@ -67,6 +67,7 @@ public class PlayerMovement : MonoBehaviour
 	void OnDrawGizmosSelected()
 	{
 		if (attackPoint == null) return;
+		Gizmos.color = Color.yellow;
 		Gizmos.DrawWireSphere(attackPoint.position, attackRange);
 	}
 
