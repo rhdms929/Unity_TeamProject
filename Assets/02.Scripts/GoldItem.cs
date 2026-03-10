@@ -21,7 +21,7 @@ public class GoldItem : MonoBehaviour
 		{
 			if (GameManager.instance != null)
 			{
-				GameManager.instance.AddScore(10);
+				GameManager.instance.AddGold(1);
 				Destroy(gameObject);
 			}
 		}
