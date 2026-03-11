@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour, IDamageable
+public class Enemy : PoolAble, IDamageable
 {
     public float speed;
     public Transform target;
@@ -15,6 +15,9 @@ public class Enemy : MonoBehaviour, IDamageable
     public int maxHP = 3;
     public float deathDestroyDelay = 1.5f; //죽는 애니메이션 길게 하려고
 
+    [Header("Drop")]
+    [SerializeField] private string dropItemKey = "Coin";
+
     private Rigidbody2D rb;
     private Animator anim;
     private SpriteRenderer sr; //Flip하기 위해 
@@ -23,22 +26,46 @@ public class Enemy : MonoBehaviour, IDamageable
     private float attackTimer;
     private int currentHP;
     private bool isDead;
+    private Coroutine returnCoroutine; //풀링 쓰면서 코루틴 함수
 
-    public GameObject goldPrefab; // 골드 프리팹
-
-    void Start()
+    private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         sr = GetComponent<SpriteRenderer>();
         col = GetComponent<Collider2D>();
-        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");  // 태그로 찾기
+    }
 
+    private void OnEnable() //OnEnable() -> 풀에서 꺼낼 때마다 실행해서 함수 바꿨으요잉~
+    {
         currentHP = maxHP;
+        isDead = false;
+        attackTimer = 0f;
 
-        if (playerObj != null)
+        if (rb != null)
         {
-            target = playerObj.transform;
+            rb.velocity = Vector2.zero;
+            rb.simulated = true;
+        }
+
+        if (col != null)
+        {
+            col.enabled = true;
+        }
+
+        if (returnCoroutine != null)
+        {
+            StopCoroutine(returnCoroutine);
+            returnCoroutine = null;
+        }
+
+        if (target == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null)
+            {
+                target = playerObj.transform;
+            }
         }
     }
     void Update()
@@ -99,8 +126,7 @@ public class Enemy : MonoBehaviour, IDamageable
         {
             damageable.TakeDamage(damage);
         }
-
-        attackTimer = attackCooldown;
+         attackTimer = attackCooldown;
     }
     public void TakeDamage(int damage)
     {
@@ -119,9 +145,6 @@ public class Enemy : MonoBehaviour, IDamageable
         if (isDead) return;
         isDead = true;
 
-        // 이동 멈춤
-        rb.velocity = Vector2.zero;
-
         // 충돌 끄기
         if (col != null)
         {
@@ -131,20 +154,31 @@ public class Enemy : MonoBehaviour, IDamageable
         // 물리 멈추기
         if (rb != null)
         {
+            // 이동 멈춤
+            rb.velocity = Vector2.zero;
             rb.simulated = false;
         }
 
         // 죽는 애니메이션
         if (anim != null)
         {
+            anim.SetFloat("Speed", 0f);
             anim.SetTrigger("Death");
         }
+
         // 죽은 자리에 골드 소환
-        if (goldPrefab != null)
+        GameObject dropItem = ObjectPoolManager.instance.GetGo(dropItemKey); //나중에 적이 떨구는 아이템 바꿀 수 있게 해뒀우요^ㅡ^ 
+        if (dropItem != null)
         {
-            Instantiate(goldPrefab, transform.position, Quaternion.identity);
+            dropItem.transform.position = transform.position;
+            dropItem.transform.rotation = Quaternion.identity;
         }
-        Destroy(gameObject, deathDestroyDelay); //죽는 애니메이션 보여주고 코인 드랍
+        returnCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
+    }
+    IEnumerator ReturnToPoolAfterDelay() //코루틴 함수
+    {
+        yield return new WaitForSeconds(deathDestroyDelay);
+        ReleaseObject();
     }
 
     //적 범위 시각화입니당 넹 ~ ㅋㅋ답장한다 답장!!

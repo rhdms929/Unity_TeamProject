@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4895352075250631514}
   - component: {fileID: 1129817029916103615}
   - component: {fileID: 8377341455400588714}
+  - component: {fileID: -1307046132136855796}
   m_Layer: 6
   m_Name: Mushroom
   m_TagString: Untagged
@@ -179,6 +180,7 @@ MonoBehaviour:
   damage: 1
   attackCooldown: 1
   maxHP: 3
+  deathDestroyDelay: 1.5
   goldPrefab: {fileID: 6281161415433797268, guid: c22427ef514512b49b07882b31ed8360, type: 3}
 --- !u!95 &8377341455400588714
 Animator:
@@ -201,3 +203,15 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &-1307046132136855796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2851645232778702501}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c42fd1ff7deb67f418f2339a55a26001, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
