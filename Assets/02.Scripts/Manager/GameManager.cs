@@ -39,6 +39,6 @@ public class GameManager : MonoBehaviour
 	public void AddGold(double points)
 	{
 		currentGold += points;
-		Debug.Log("Gold: " + currentGold);
+		Debug.Log(" " + currentGold);
 	}
 }

@@ -11,7 +11,7 @@ public class UIManager : MonoBehaviour
     {
         if(GameManager.instance != null)
         {
-            goldText.text = "Gold: " + GameManager.instance.currentGold.ToString("F0");
+            goldText.text = " " + GameManager.instance.currentGold.ToString("F0");
 		}
 	}
 
