@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: -1307046132136855796}
   m_Layer: 6
   m_Name: Mushroom
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -181,7 +181,7 @@ MonoBehaviour:
   attackCooldown: 1
   maxHP: 3
   deathDestroyDelay: 1.5
-  goldPrefab: {fileID: 6281161415433797268, guid: c22427ef514512b49b07882b31ed8360, type: 3}
+  dropItemKey: Coin
 --- !u!95 &8377341455400588714
 Animator:
   serializedVersion: 5
