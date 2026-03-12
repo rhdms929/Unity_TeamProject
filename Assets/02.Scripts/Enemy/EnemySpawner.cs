@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    //[SerializeField] private GameObject enemyPrefab;		//	나중에 몬스터가 더 추가되면 리스트로 변경해야됨
-    [SerializeField] private string enemyPoolKey ; //풀링
-    [SerializeField] private float spawnInterval = 3.0f;    //	몬스터가 생성되는 간격
+    [SerializeField] private GameObject[] enemyPrefabs;
+    [SerializeField] private float spawnInterval = 3f; //	몬스터가 생성되는 간격
+    
 	private float timer;
 
 	void Update()
 	{
         if (ObjectPoolManager.instance == null) return;
         if (ObjectPoolManager.instance.IsReady == false) return;
+        if (enemyPrefabs == null || enemyPrefabs.Length == 0) return;
 
         timer += Time.deltaTime;
 
@@ -22,13 +23,17 @@ public class EnemySpawner : MonoBehaviour
             timer = 0f;
         }
     }
-
     void SpawnEnemy()
 	{
+        int randomIndex = Random.Range(0, enemyPrefabs.Length);
+        GameObject selectedPrefab = enemyPrefabs[randomIndex];
+
+        if (selectedPrefab == null) return;
+
         // 화면 밖에서 랜덤하게 생성되게 하거나 특정 범위 내에서 생성
         Vector2 randomPos = new Vector2(Random.Range(-5f, 5f), Random.Range(-5f, 5f));
 
-        GameObject enemy = ObjectPoolManager.instance.GetGo(enemyPoolKey);
+        GameObject enemy = ObjectPoolManager.instance.GetGo(selectedPrefab.name);
         if (enemy == null) return;
 
         enemy.transform.position = randomPos;

@@ -19,7 +19,7 @@ public class UpgradeButton : MonoBehaviour
         if(GameManager.instance.currentGold >= cost)
         {
             GameManager.instance.currentGold -= cost;   //  돈 지불
-            GameManager.instance.goldPerSecond += goldIncrease;     //  1초당 골드 획등량 증가
+            //GameManager.instance.goldPerSecond += goldIncrease;     //1초당 골드 획등량 증가(막아둠)
             cost *= 1.5;    //  가격상승 (1.5배로 해놨음)
             UpdateUI();
 		}
