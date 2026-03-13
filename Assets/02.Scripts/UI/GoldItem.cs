@@ -4,33 +4,47 @@ using UnityEngine;
 
 public class GoldItem : PoolAble
 {
-    private bool canPickUp;
-    private void OnEnable() // 여기도 풀링 할때만 실행되게 enable로 바꿈
-    {
-        canPickUp = false;
-        CancelInvoke();
-        Invoke(nameof(EnablePickUp), 0.3f); //풀링하면서 바로 먹어지는 오류 고침
-    }
-    private void OnDisable()
-    {
-        CancelInvoke();
-    }
-    void EnablePickUp()
+	public float moveSpeed = 6f;
+
+	private Vector3 targetPos;
+	private bool canMove;
+
+	private void OnEnable()
 	{
-		canPickUp = true;
+		canMove = false;
+
+		GameObject icon = GameObject.Find("GoldIcon");
+
+		if (icon != null)
+		{
+			Vector3 screenPos = icon.transform.position;
+			targetPos = Camera.main.ScreenToWorldPoint(screenPos);
+			targetPos.z = 0;
+		}
+
+		CancelInvoke();
+		Invoke(nameof(EnableMove), 0.3f);
 	}
 
-	void OnTriggerEnter2D(Collider2D collision)
+	void EnableMove()
 	{
-        if (canPickUp == false) return;
+		canMove = true;
+	}
 
-        if (collision.CompareTag("Player"))
-        {
-            if (GameManager.instance != null)
-            {
-                GameManager.instance.AddGold(1);
-            }
-            ReleaseObject();
-        }
-    }
+	void Update()
+	{
+		if (!canMove) return;
+
+		transform.position = Vector3.MoveTowards(
+			transform.position,
+			targetPos,
+			moveSpeed * Time.deltaTime
+		);
+
+		if (Vector3.Distance(transform.position, targetPos) < 0.1f)
+		{
+			GameManager.instance.AddGold(1);
+			ReleaseObject();
+		}
+	}
 }
