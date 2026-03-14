@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 	public static GameManager instance;
 
 	public double currentGold = 0;
+	public Transform goldIcon;
 	//public double goldPerSecond = 1;	//	1초마다 골드가 1씩 증가 (막아둠)
 
 	void Awake()

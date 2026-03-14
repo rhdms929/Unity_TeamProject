@@ -28,6 +28,7 @@ public class Enemy : PoolAble, IDamageable
     private bool isDead;
     private Coroutine returnCoroutine; //풀링 쓰면서 코루틴 함수
 
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -140,49 +141,48 @@ public class Enemy : PoolAble, IDamageable
         }
     }
 
-    public void Die()
-    {
-        if (isDead) return;
-        isDead = true;
+	public void Die()
+	{
+		if (isDead) return;
+		isDead = true;
 
-        // 충돌 끄기
-        if (col != null)
-        {
-            col.enabled = false;
-        }
+		// 1. 물리/충돌 끄고 애니메이션만 먼저 실행
+		if (col != null) col.enabled = false;
+		if (rb != null)
+		{
+			rb.velocity = Vector2.zero;
+			rb.simulated = false;
+		}
 
-        // 물리 멈추기
-        if (rb != null)
-        {
-            // 이동 멈춤
-            rb.velocity = Vector2.zero;
-            rb.simulated = false;
-        }
+		if (anim != null)
+		{
+			anim.SetFloat("Speed", 0f);
+			anim.SetTrigger("Death");
+		}
 
-        // 죽는 애니메이션
-        if (anim != null)
-        {
-            anim.SetFloat("Speed", 0f);
-            anim.SetTrigger("Death");
-        }
+		// 2. 골드 소환은 코루틴에게 맡깁니다.
+		returnCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
+	}
 
-        // 죽은 자리에 골드 소환
-        GameObject dropItem = ObjectPoolManager.instance.GetGo(dropItemKey); //나중에 적이 떨구는 아이템 바꿀 수 있게 해뒀우요^ㅡ^ 
-        if (dropItem != null)
-        {
-            dropItem.transform.position = transform.position;
-            dropItem.transform.rotation = Quaternion.identity;
-        }
-        returnCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
-    }
-    IEnumerator ReturnToPoolAfterDelay() //코루틴 함수
-    {
-        yield return new WaitForSeconds(deathDestroyDelay);
-        ReleaseObject();
-    }
+	IEnumerator ReturnToPoolAfterDelay()
+	{
+		// deathDestroyDelay 시간만큼 기다립니다 (애니메이션 재생 시간 등)
+		yield return new WaitForSeconds(deathDestroyDelay);
 
-    //적 범위 시각화입니당 넹 ~ ㅋㅋ답장한다 답장!!
-    void OnDrawGizmosSelected()
+		// 3. [수정] 기다린 후에 골드를 생성합니다!
+		GameObject dropItem = ObjectPoolManager.instance.GetGo(dropItemKey);
+		if (dropItem != null)
+		{
+			dropItem.transform.position = transform.position;
+			dropItem.transform.rotation = Quaternion.identity;
+		}
+
+		// 4. 적 오브젝트를 풀로 반환
+		ReleaseObject();
+	}
+
+	//적 범위 시각화입니당 넹 ~ ㅋㅋ답장한다 답장!!
+	void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, detectRange);
