@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
 	// --- 컴포넌트 및 설정 ---
-	public float speed=3f;
+	public float speed = 3f;
 
 	Rigidbody2D rb;
 	SpriteRenderer sr;

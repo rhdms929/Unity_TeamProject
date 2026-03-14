@@ -181,6 +181,7 @@ MonoBehaviour:
   attackCooldown: 1
   maxHP: 3
   deathDestroyDelay: 1.5
+  nextWaypointDistance: 0.3
   dropItemKey: Coin
 --- !u!95 &8377341455400588714
 Animator:

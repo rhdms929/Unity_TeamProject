@@ -4,147 +4,192 @@ using UnityEngine;
 
 public class Enemy : PoolAble, IDamageable
 {
-    public float speed;
-    public Transform target;
+	public float speed = 3f;
+	public Transform target;
 
-    [Header("Enemy AI")]
-    public float detectRange = 5f;   // 플레이어 감지 범위
-    public float attackRange = 1f;   // 공격 범위
-    public int damage = 1;           // 플레이어에게 줄 데미지
-    public float attackCooldown = 1f;
-    public int maxHP = 3;
-    public float deathDestroyDelay = 1.5f; //죽는 애니메이션 길게 하려고
+	[Header("Enemy AI")]
+	public float detectRange = 5f;
+	public float attackRange = 1f;
+	public int damage = 1;
+	public float attackCooldown = 1f;
+	public int maxHP = 3;
+	public float deathDestroyDelay = 1.5f;
 
-    [Header("Drop")]
-    [SerializeField] private string dropItemKey = "Coin";
+	[Header("A* Pathfinding")]
+	public float nextWaypointDistance = 0.3f; // 다음 노드로 넘어가기 위한 거리
+	private Pathfinding pathfinding;
+	private List<Node> path;
+	private int targetIndex;
 
-    private Rigidbody2D rb;
-    private Animator anim;
-    private SpriteRenderer sr; //Flip하기 위해 
-    private Collider2D col; //죽었을때 충돌 수정 하려고
+	[Header("Drop")]
+	[SerializeField] private string dropItemKey = "Coin";
 
-    private float attackTimer;
-    private int currentHP;
-    private bool isDead;
-    private Coroutine returnCoroutine; //풀링 쓰면서 코루틴 함수
+	private Rigidbody2D rb;
+	private Animator anim;
+	private SpriteRenderer sr;
+	private Collider2D col;
 
+	private float attackTimer;
+	private int currentHP;
+	private bool isDead;
+	private Coroutine returnCoroutine;	//	풀링 쓰면서 코루틴 함수
 
-    private void Awake()
-    {
-        rb = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
-        sr = GetComponent<SpriteRenderer>();
-        col = GetComponent<Collider2D>();
-    }
+	private void Awake()
+	{
+		rb = GetComponent<Rigidbody2D>();
+		anim = GetComponent<Animator>();
+		sr = GetComponent<SpriteRenderer>();
+		col = GetComponent<Collider2D>();
+		pathfinding = FindObjectOfType<Pathfinding>();
+	}
 
-    private void OnEnable() //OnEnable() -> 풀에서 꺼낼 때마다 실행해서 함수 바꿨으요잉~
-    {
-        currentHP = maxHP;
-        isDead = false;
-        attackTimer = 0f;
+	private void OnEnable() //OnEnable() -> 풀에서 꺼낼 때마다 실행해서 함수 바꿨으요잉~
+	{
+		currentHP = maxHP;
+		isDead = false;
+		attackTimer = 0f;
+		path = null; // 경로 초기화
 
-        if (rb != null)
-        {
-            rb.velocity = Vector2.zero;
-            rb.simulated = true;
-        }
+		if (rb != null)
+		{
+			rb.velocity = Vector2.zero;
+			rb.simulated = true;
+		}
 
-        if (col != null)
-        {
-            col.enabled = true;
-        }
+		if (col != null) col.enabled = true;
 
-        if (returnCoroutine != null)
-        {
-            StopCoroutine(returnCoroutine);
-            returnCoroutine = null;
-        }
+		if (returnCoroutine != null)
+		{
+			StopCoroutine(returnCoroutine);
+			returnCoroutine = null;
+		}
 
-        if (target == null)
-        {
-            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
-            if (playerObj != null)
-            {
-                target = playerObj.transform;
-            }
-        }
-    }
-    void Update()
-    {
-        if (isDead) return;
+		if (target == null)
+		{
+			GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+			if (playerObj != null) target = playerObj.transform;
+		}
 
-        if (attackTimer > 0)
-        {
-            attackTimer -= Time.deltaTime;
-        }
-    }
-    void FixedUpdate()
-    {
-        if (isDead) return;
-        if (target == null) return;
+		// 0.5초마다 경로를 갱신 -> 성능 최적화
+		InvokeRepeating("UpdatePath", 0f, 0.5f);
+	}
 
-        float distance = Vector2.Distance(transform.position, target.position);
+	private void OnDisable()
+	{
+		CancelInvoke("UpdatePath");
+	}
 
-        // 감지 범위 밖
-        if (distance > detectRange)
-        {
-            rb.velocity = Vector2.zero;
-            anim.SetFloat("Speed", 0f);
-            return;
-        }
-        // 공격
-        if (distance <= attackRange)
-        {
-            rb.velocity = Vector2.zero;
-            anim.SetFloat("Speed", 0f);
-            AttackPlayer();
-            return;
-        }
-        // 추적 중 
-        Vector2 direction = ((Vector2)target.position - rb.position).normalized;
+	void UpdatePath()
+	{
+		if (isDead || target == null || pathfinding == null) return;
 
-        if (direction.x > 0.01f)
-        {
-            sr.flipX = false;
-        }
-        else if (direction.x < -0.01f)
-        {
-            sr.flipX = true;
-        }
-        anim.SetFloat("Speed", 1f);
-        rb.MovePosition(rb.position + direction * speed * Time.fixedDeltaTime);
-    }
-    void AttackPlayer()
-    {
-        if (isDead) return;
-        if (attackTimer > 0) return;
+		float distance = Vector2.Distance(transform.position, target.position);
 
-        anim.SetTrigger("Attack");
+		// 감지 범위 내에 있을 때만 길을 찾기
+		if (distance <= detectRange && distance > attackRange)
+		{
+			path = pathfinding.FindPath(transform.position, target.position);
+			targetIndex = 0;
+		}
+	}
 
-        IDamageable damageable = target.GetComponent<IDamageable>();
+	void Update()
+	{
+		if (isDead) return;
 
-        if (damageable != null)
-        {
-            damageable.TakeDamage(damage);
-        }
-         attackTimer = attackCooldown;
-    }
-    public void TakeDamage(int damage)
-    {
-        if (isDead) return;
+		if (attackTimer > 0) attackTimer -= Time.deltaTime;
+	}
 
-        currentHP -= damage;
+	void FixedUpdate()
+	{
+		if (isDead || target == null) return;
 
-        if (currentHP <= 0)
-        {
-            Die();
-        }
-    }
+		float distance = Vector2.Distance(transform.position, target.position);
+
+		// 감지 범위 밖
+		if (distance > detectRange)
+		{
+			StopMoving();
+			return;
+		}
+
+		// 공격
+		if (distance <= attackRange)
+		{
+			StopMoving();
+			AttackPlayer();
+			return;
+		}
+
+		// 추적 중 (A* 경로 따라가기)
+		FollowPath();
+	}
+
+	void FollowPath()
+	{
+		if (path == null || targetIndex >= path.Count)
+		{
+			// 경로가 끝났는데도 플레이어가 멀리 있다면 다시 길찾기 시도
+			if (Vector2.Distance(transform.position, target.position) > attackRange)
+			{
+				UpdatePath();
+			}
+			return;
+		}
+
+		Vector3 targetWayPoint = path[targetIndex].worldPos;
+		// 적의 현재 위치에서 목표 노드를 향한 방향 계산
+
+		Vector2 direction = ((Vector2)targetWayPoint - (Vector2)transform.position).normalized;
+
+		// 플레이어 방향을 바라보도록 flipX 설정 (노드 방향이 아니라 실제 플레이어 방향 기준)
+		Vector2 dirToPlayer = (target.position - transform.position).normalized;
+		sr.flipX = dirToPlayer.x < 0;
+
+		anim.SetFloat("Speed", 1f);
+
+		// 이동 처리
+		transform.position = Vector3.MoveTowards(transform.position, targetWayPoint, speed * Time.deltaTime);
+
+		// 현재 노드에 충분히 가까워지면 다음 노드로
+		if (Vector3.Distance(transform.position, targetWayPoint) < nextWaypointDistance)
+		{
+			targetIndex++;
+		}
+	}
+
+	void StopMoving()
+	{
+		rb.velocity = Vector2.zero;
+		anim.SetFloat("Speed", 0f);
+	}
+
+	void AttackPlayer()
+	{
+		if (isDead || attackTimer > 0) return;
+
+		anim.SetTrigger("Attack");
+
+		IDamageable damageable = target.GetComponent<IDamageable>();
+		if (damageable != null)
+		{
+			damageable.TakeDamage(damage);
+		}
+		attackTimer = attackCooldown;
+	}
+
+	public void TakeDamage(int damage)
+	{
+		if (isDead) return;
+		currentHP -= damage;
+		if (currentHP <= 0) Die();
+	}
 
 	public void Die()
 	{
 		if (isDead) return;
 		isDead = true;
+		CancelInvoke("UpdatePath");
 
 		// 1. 물리/충돌 끄고 애니메이션만 먼저 실행
 		if (col != null) col.enabled = false;
@@ -159,7 +204,6 @@ public class Enemy : PoolAble, IDamageable
 			anim.SetFloat("Speed", 0f);
 			anim.SetTrigger("Death");
 		}
-
 		// 2. 골드 소환은 코루틴에게 맡깁니다.
 		returnCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
 	}
@@ -176,18 +220,28 @@ public class Enemy : PoolAble, IDamageable
 			dropItem.transform.position = transform.position;
 			dropItem.transform.rotation = Quaternion.identity;
 		}
-
 		// 4. 적 오브젝트를 풀로 반환
 		ReleaseObject();
 	}
 
-	//적 범위 시각화입니당 넹 ~ ㅋㅋ답장한다 답장!!
+	//적 범위 시각화입니당
 	void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, detectRange);
+	{
+		Gizmos.color = Color.yellow;
+		Gizmos.DrawWireSphere(transform.position, detectRange);
+		Gizmos.color = Color.red;
+		Gizmos.DrawWireSphere(transform.position, attackRange);
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
-    }
+		// 현재 경로 시각화 (디버그용)
+		if (path != null)
+		{
+			Gizmos.color = Color.cyan;
+			for (int i = targetIndex; i < path.Count; i++)
+			{
+				Gizmos.DrawCube(path[i].worldPos, Vector3.one * 0.2f);
+				if (i == targetIndex) Gizmos.DrawLine(transform.position, path[i].worldPos);
+				else Gizmos.DrawLine(path[i - 1].worldPos, path[i].worldPos);
+			}
+		}
+	}
 }
