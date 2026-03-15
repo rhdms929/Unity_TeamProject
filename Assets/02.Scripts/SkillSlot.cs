@@ -20,6 +20,7 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
     public Camera mainCamera;
     public LayerMask enemyLayer;
 
+    [Header("UI")]
     public Image autoCastMark;
     public Image cooldownOverlay;
     public Image selectedMark;
@@ -55,7 +56,6 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
             ToggleAutoCast();
         }
     }
-
     private void UpdateCooldown()  // 쿨타임 관리
     {
         if (cooldownTimer <= 0f)
@@ -116,15 +116,12 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
     {
         isSelected = true;
         UpdateSelectedUI();
-        Debug.Log(skillName + " 선택됨");
     }
     private void ToggleAutoCast()  // 자동 시전 ON/OFF
     {
         isAutoCastOn = !isAutoCastOn;
         autoCastTimer = 0f;
         UpdateAutoCastUI();
-
-        Debug.Log(skillName + " 자동시전 : " + isAutoCastOn);
     }
     private void CastSkill(Vector3 centerPos) // 스킬
     {

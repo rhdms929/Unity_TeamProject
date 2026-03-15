@@ -175,8 +175,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 1
   target: {fileID: 0}
-  detectRange: 3
-  attackRange: 1
+  detectRange: 5
+  attackRange: 0.7
   damage: 1
   attackCooldown: 1
   maxHP: 3
