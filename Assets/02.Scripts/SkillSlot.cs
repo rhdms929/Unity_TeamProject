@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -6,11 +8,11 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
 {
     [Header("Skill")]
     public string skillName = "Explosion";
-    public int damage = 20;
-    public float radius = 1.5f;
-    public float cooldown = 1f;
-    public float autoCastInterval = 1f;
-    public float autoTargetRange = 10f;
+    public int damage = 20;                // 스킬 데미지
+    public float radius = 1.5f;            // 스킬 범위
+    public float cooldown = 1f;            // 스킬 쿨타임
+    public float autoCastInterval = 1f;    // 자동 시전 간격
+    public float autoTargetRange = 10f;    // 자동 시전이 찾는 적 범위
 
     [Header("References")]
     public GameObject effectPrefab;
@@ -18,15 +20,14 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
     public Camera mainCamera;
     public LayerMask enemyLayer;
 
-    [Header("UI")]
     public Image autoCastMark;
     public Image cooldownOverlay;
     public Image selectedMark;
 
-    private bool isSelected;
-    private bool isAutoCastOn;
-    private float cooldownTimer;
-    private float autoCastTimer;
+    private bool isSelected;       // 현재 스킬이 선택된 상태인지
+    private bool isAutoCastOn;     // 자동 시전 ON/OFF 상태
+    private float cooldownTimer;   // 쿨타임 타이머
+    private float autoCastTimer;   // 자동시전 타이머
 
     private void Start()
     {
@@ -34,30 +35,28 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
         {
             mainCamera = Camera.main;
         }
-
         RefreshUI();
     }
 
     private void Update()
     {
-        UpdateCooldown();
-        HandleManualCast();
-        HandleAutoCast();
+        UpdateCooldown();    // 쿨타임 감소
+        HandleManualCast();  // 수동
+        HandleAutoCast();    // 자동
     }
-
-    public void OnPointerClick(PointerEventData eventData)
+    public void OnPointerClick(PointerEventData eventData) // UI 버튼 클릭 이벤트
     {
-        if (eventData.button == PointerEventData.InputButton.Left)
+        if (eventData.button == PointerEventData.InputButton.Left) // 좌클릭 → 스킬 선택
         {
             SelectSkill();
         }
-        else if (eventData.button == PointerEventData.InputButton.Right)
+        else if (eventData.button == PointerEventData.InputButton.Right)  // 우클릭 → 자동시전 ON/OFF
         {
             ToggleAutoCast();
         }
     }
 
-    private void UpdateCooldown()
+    private void UpdateCooldown()  // 쿨타임 관리
     {
         if (cooldownTimer <= 0f)
         {
@@ -71,20 +70,19 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
 
         UpdateCooldownUI();
     }
-
-    private void HandleManualCast()
+    private void HandleManualCast()  // 수동일때
     {
-        if (!isSelected) return;
+        if (!isSelected) return; // 스킬 선택 상태 아니면 종료
         if (cooldownTimer > 0f) return;
 
-        if (Input.GetMouseButtonDown(1))
+        if (Input.GetMouseButtonDown(1)) // 우클릭하면 선택 취소
         {
             isSelected = false;
             UpdateSelectedUI();
             return;
         }
 
-        if (!Input.GetMouseButtonDown(0)) return;
+        if (!Input.GetMouseButtonDown(0)) return;  // 좌클릭이 아니면 종료
 
         if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject())
         {
@@ -99,8 +97,7 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
         isSelected = false;
         UpdateSelectedUI();
     }
-
-    private void HandleAutoCast()
+    private void HandleAutoCast() // 자동 일때
     {
         if (!isAutoCastOn) return;
         if (cooldownTimer > 0f) return;
@@ -110,20 +107,18 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
 
         autoCastTimer = 0f;
 
-        Transform target = FindNearestEnemy();
+        Transform target = FindNearestEnemy();  // 가장 가까운 적 찾기
         if (target == null) return;
 
-        CastSkill(target.position);
+        CastSkill(target.position); 
     }
-
-    private void SelectSkill()
+    private void SelectSkill() // 스킬 선택
     {
         isSelected = true;
         UpdateSelectedUI();
         Debug.Log(skillName + " 선택됨");
     }
-
-    private void ToggleAutoCast()
+    private void ToggleAutoCast()  // 자동 시전 ON/OFF
     {
         isAutoCastOn = !isAutoCastOn;
         autoCastTimer = 0f;
@@ -131,8 +126,7 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
 
         Debug.Log(skillName + " 자동시전 : " + isAutoCastOn);
     }
-
-    private void CastSkill(Vector3 centerPos)
+    private void CastSkill(Vector3 centerPos) // 스킬
     {
         cooldownTimer = cooldown;
 
@@ -141,7 +135,7 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
             Instantiate(effectPrefab, centerPos, Quaternion.identity);
         }
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(centerPos, radius, enemyLayer);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(centerPos, radius, enemyLayer); // 범위 안 적 찾기
 
         foreach (Collider2D hit in hits)
         {
@@ -154,8 +148,7 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
 
         Debug.Log(skillName + " 발동");
     }
-
-    private Transform FindNearestEnemy()
+    private Transform FindNearestEnemy() // 가장 가까운 적 찾기
     {
         if (player == null) return null;
 
@@ -175,18 +168,17 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
                 nearest = hit.transform;
             }
         }
-
         return nearest;
     }
 
-    private void RefreshUI()
+    private void RefreshUI() // UI 초기화
     {
         UpdateAutoCastUI();
         UpdateCooldownUI();
         UpdateSelectedUI();
     }
 
-    private void UpdateAutoCastUI()
+    private void UpdateAutoCastUI() // 자동 시전 표시 UI
     {
         if (autoCastMark != null)
         {
@@ -194,14 +186,14 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    private void UpdateCooldownUI()
+    private void UpdateCooldownUI() // 쿨타임 UI 업데이트
     {
         if (cooldownOverlay == null) return;
 
         cooldownOverlay.fillAmount = cooldown <= 0f ? 0f : cooldownTimer / cooldown;
     }
 
-    private void UpdateSelectedUI()
+    private void UpdateSelectedUI() // 선택 상태 UI
     {
         if (selectedMark != null)
         {
