@@ -191,8 +191,8 @@ public class Enemy : PoolAble, IDamageable
 		isDead = true;
 		CancelInvoke("UpdatePath");
 
-		// 1. 물리/충돌 끄고 애니메이션만 먼저 실행
 		if (col != null) col.enabled = false;
+
 		if (rb != null)
 		{
 			rb.velocity = Vector2.zero;
@@ -204,7 +204,7 @@ public class Enemy : PoolAble, IDamageable
 			anim.SetFloat("Speed", 0f);
 			anim.SetTrigger("Death");
 		}
-		// 2. 골드 소환은 코루틴에게 맡깁니다.
+		// 골드 소환은 코루틴에게 맡깁니다.
 		returnCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
 	}
 
@@ -213,18 +213,18 @@ public class Enemy : PoolAble, IDamageable
 		// deathDestroyDelay 시간만큼 기다립니다 (애니메이션 재생 시간 등)
 		yield return new WaitForSeconds(deathDestroyDelay);
 
-		// 3. [수정] 기다린 후에 골드를 생성합니다!
+		// 골드 생성
 		GameObject dropItem = ObjectPoolManager.instance.GetGo(dropItemKey);
 		if (dropItem != null)
 		{
 			dropItem.transform.position = transform.position;
 			dropItem.transform.rotation = Quaternion.identity;
 		}
-		// 4. 적 오브젝트를 풀로 반환
+		// 적 오브젝트를 풀로 반환
 		ReleaseObject();
 	}
 
-	//적 범위 시각화입니당
+	// 적 범위 시각화입니당
 	void OnDrawGizmosSelected()
 	{
 		Gizmos.color = Color.yellow;

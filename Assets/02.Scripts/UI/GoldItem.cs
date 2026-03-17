@@ -5,6 +5,7 @@ public class GoldItem : PoolAble
 {
 	public float startSpeed = 5f;      // 처음 속도 
 	public float acceleration = 10f;   // 가속도
+	public float waitTime = 0.5f;     // 애니메이션 보여주면서 머무는 시간
 
 	private Vector3 targetPos;
 	private float currentSpeed;
@@ -13,7 +14,7 @@ public class GoldItem : PoolAble
 	void OnEnable()
 	{
 		flyToUI = false;
-		SetupTargetAndFly();
+		Invoke("SetupTargetAndFly", waitTime); 
 	}
 
 	void SetupTargetAndFly()
