@@ -10,7 +10,12 @@ public class PlayerStatus : MonoBehaviour, IDamageable
 	public float maxMp = 50f;
 	public float currentMp;
 
-	[Header(" UI References ")]
+    [Header("MP Regen")]
+    public float mpRegen = 2f; // 초당 마나 회복량
+    public float mpRegenDelay = 1.5f; // 스킬 사용 후 회복 멈추는 시간
+    private float mpRegenTimer = 0f;
+
+    [Header(" UI References ")]
 	public Image topHpFill;
 	public Image bottomHpFill;
 	public Image topMpFill;
@@ -21,8 +26,7 @@ public class PlayerStatus : MonoBehaviour, IDamageable
 	[Header("Animation")]
 	public Animator animator; 
 	private bool isDead = false;
-
-	void Awake()
+    void Awake()
 	{
 		currentHp = maxHp;
 		currentMp = maxMp;
@@ -36,7 +40,9 @@ public class PlayerStatus : MonoBehaviour, IDamageable
 
 	void Update()
 	{
-		float targetHpRatio = (float)currentHp / maxHp;
+        RegenerateMana(); //마나 회복
+
+        float targetHpRatio = (float)currentHp / maxHp;
 		float targetMpRatio = currentMp / maxMp;
 
 		// HP 바 
@@ -63,9 +69,21 @@ public class PlayerStatus : MonoBehaviour, IDamageable
 			return false; 
 		}
 	}
+    void RegenerateMana() //마나 회복
+    {
+        if (currentMp >= maxMp) return; //꽉 차있으면 멈추기
 
-	// Enemy가 호출하는 함수
-	public void TakeDamage(int damage)
+        if (mpRegenTimer > 0f)
+        {
+            mpRegenTimer -= Time.deltaTime;
+            return;
+        }
+        currentMp += mpRegen * Time.deltaTime;
+        currentMp = Mathf.Clamp(currentMp, 0, maxMp);
+    }
+
+    // Enemy가 호출하는 함수
+    public void TakeDamage(int damage)
 	{
 		currentHp -= damage;
 		currentHp = Mathf.Clamp(currentHp, 0, maxHp);
