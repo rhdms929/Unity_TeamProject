@@ -25,7 +25,10 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
     public Image cooldownOverlay;
     public Image selectedMark;
 
-    private bool isSelected;       // 현재 스킬이 선택된 상태인지
+	[Header("Skill Settings")]
+	public float manaCost = 10f;    //스킬당 소모 마나 설정
+
+	private bool isSelected;       // 현재 스킬이 선택된 상태인지
     private bool isAutoCastOn;     // 자동 시전 ON/OFF 상태
     private float cooldownTimer;   // 쿨타임 타이머
     private float autoCastTimer;   // 자동시전 타이머
@@ -125,7 +128,19 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
     }
     private void CastSkill(Vector3 centerPos) // 스킬
     {
-        cooldownTimer = cooldown;
+		PlayerStatus status = player.GetComponent<PlayerStatus>();
+
+		if (status != null)
+		{
+			// 마나 사용 시도
+			if (!status.UseMana(manaCost))
+			{
+				Debug.Log($"{skillName} 발동 실패: 마나 부족");
+				return; // 마나가 없으면 여기서 함수를 종료해서 스킬이 안 나가게 함
+			}
+		}
+
+		cooldownTimer = cooldown;
 
         if (effectPrefab != null)
         {

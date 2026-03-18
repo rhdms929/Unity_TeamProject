@@ -51,6 +51,18 @@ public class PlayerStatus : MonoBehaviour, IDamageable
 		if (hpText != null) hpText.text = $"{currentHp} / {maxHp}";
 		if (mpText != null) mpText.text = $"{(int)currentMp} / {(int)maxMp}";
 	}
+	public bool UseMana(float amount)
+	{
+		if (currentMp >= amount)
+		{
+			currentMp -= amount; // 마나 차감
+			return true; 
+		}
+		else
+		{
+			return false; 
+		}
+	}
 
 	// Enemy가 호출하는 함수
 	public void TakeDamage(int damage)
