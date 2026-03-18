@@ -17,6 +17,7 @@ public class UpgradeButton : MonoBehaviour
     public void BuyUpgrade()
     {
         if(GameManager.instance.currentGold >= cost)
+
         {
             GameManager.instance.currentGold -= cost;   //  µ· ÁöºÒ
             //GameManager.instance.goldPerSecond += goldIncrease;     //1ÃÊ´ç °ñµå È¹µî·® Áõ°¡(¸·¾ÆµÒ)
