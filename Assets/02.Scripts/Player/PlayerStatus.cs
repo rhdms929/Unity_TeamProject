@@ -22,8 +22,9 @@ public class PlayerStatus : MonoBehaviour, IDamageable
 	public Image bottomMpFill;
 	public TextMeshProUGUI hpText;
 	public TextMeshProUGUI mpText;
+    public UIManager uiManager;
 
-	[Header("Animation")]
+    [Header("Animation")]
 	public Animator animator; 
 	private bool isDead = false;
     void Awake()
@@ -107,12 +108,18 @@ public class PlayerStatus : MonoBehaviour, IDamageable
 		{
 			animator.SetTrigger("Dead");
 		}
-
 		// 사망 시 조작 불능 처리 -> 일단 해둠
 		GetComponent<PlayerMovement>().enabled = false;
-	}
-
-	void UpdateAllStatusUI()
+        Invoke(nameof(ShowGameOver), 1.5f);
+    }
+    void ShowGameOver()
+    {
+        if (uiManager != null)
+        {
+            uiManager.ShowGameOver();
+        }
+    }
+    void UpdateAllStatusUI()
 	{
 		float hpRatio = (float)currentHp / maxHp;
 		if (topHpFill != null) topHpFill.fillAmount = hpRatio;
