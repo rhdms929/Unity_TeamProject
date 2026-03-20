@@ -83,8 +83,30 @@ public class PlayerStatus : MonoBehaviour, IDamageable
         currentMp = Mathf.Clamp(currentMp, 0, maxMp);
     }
 
-    // Enemy가 호출하는 함수
-    public void TakeDamage(int damage)
+	// 체력 회복 (ItemSlot에서 호출)
+	public void HealHP(float amount)
+	{
+		if (isDead) return;
+
+		currentHp += (int)amount; 
+		currentHp = Mathf.Clamp(currentHp, 0, maxHp); 
+
+		//Debug.Log($"체력 회복 현재 HP: {currentHp}");
+	}
+
+	// 마나 회복 (ItemSlot에서 호출)
+	public void HealMP(float amount)
+	{
+		if (isDead) return;
+
+		currentMp += amount;
+		currentMp = Mathf.Clamp(currentMp, 0, maxMp);
+
+		//Debug.Log($"마나 회복 현재 MP: {currentMp}");
+	}
+
+	// Enemy가 호출하는 함수
+	public void TakeDamage(int damage)
 	{
 		currentHp -= damage;
 		currentHp = Mathf.Clamp(currentHp, 0, maxHp);
@@ -96,7 +118,6 @@ public class PlayerStatus : MonoBehaviour, IDamageable
 			Die();
 		}
 	}
-
 	void Die()
 	{
 		if (isDead) return;

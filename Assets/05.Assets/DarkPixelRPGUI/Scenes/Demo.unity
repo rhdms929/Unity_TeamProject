@@ -7281,10 +7281,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 866932ef98b71f2429dff4ad26f608a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipWindow: {fileID: 794051350}
-  header: Big Potion
-  description: Heals 50 HP
-  rectTransform: {fileID: 286533593}
 --- !u!1 &287807716
 GameObject:
   m_ObjectHideFlags: 0
@@ -12703,10 +12699,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 866932ef98b71f2429dff4ad26f608a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipWindow: {fileID: 794051350}
-  header: MP Potion
-  description: Restores 50 MP
-  rectTransform: {fileID: 492696754}
 --- !u!1 &496151278
 GameObject:
   m_ObjectHideFlags: 0
@@ -17303,10 +17295,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 866932ef98b71f2429dff4ad26f608a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipWindow: {fileID: 794051350}
-  header: Bow
-  description: Equip a bow
-  rectTransform: {fileID: 635989537}
 --- !u!1 &644219303
 GameObject:
   m_ObjectHideFlags: 0
@@ -38260,10 +38248,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 866932ef98b71f2429dff4ad26f608a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipWindow: {fileID: 794051350}
-  header: Sword
-  description: Equip a sword
-  rectTransform: {fileID: 1417407124}
 --- !u!1 &1418363411
 GameObject:
   m_ObjectHideFlags: 0
@@ -44448,10 +44432,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 866932ef98b71f2429dff4ad26f608a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tooltipWindow: {fileID: 794051350}
-  header: Magic spell
-  description: Deal 30 damage
-  rectTransform: {fileID: 1624032834}
 --- !u!1 &1630021313
 GameObject:
   m_ObjectHideFlags: 0
