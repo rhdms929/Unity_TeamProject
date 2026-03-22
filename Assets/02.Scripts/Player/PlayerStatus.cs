@@ -6,7 +6,7 @@ public class PlayerStatus : MonoBehaviour, IDamageable
 {
 
     [Header("Auto Attack")]
-    public AutoAttack2 autoAttack;
+    public AutoAttack autoAttack;
 
     [Header(" Status Values ")]
     public int maxHp = 100;

@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class AutoAttack : MonoBehaviour
 {
 	[Header("Settings")]
-	public bool isAutoMode = false;
+	public bool isAutoMode = true;
 	public float detectRange = 10f;     // 적을 발견하는 범위
 	public float attackRange = 1.2f;    // 멈춰서 공격할 거리
 	public float moveSpeed = 4f;        // 추격 속도
@@ -23,6 +23,9 @@ public class AutoAttack : MonoBehaviour
 		anim = GetComponent<Animator>();
 		sr = GetComponent<SpriteRenderer>();
 		rb = GetComponent<Rigidbody2D>();
+
+
+		isAutoMode = true;
 	}
 
 	void Update()
@@ -30,6 +33,12 @@ public class AutoAttack : MonoBehaviour
 		if (!isAutoMode) return;
 
 		Transform target = GetNearestEnemy();
+
+		// 현재 타겟이 없거나, 타겟이 죽었거나(비활성화), 너무 멀어졌을 때만 새로 찾기
+		if (target == null || !target.gameObject.activeInHierarchy || Vector2.Distance(transform.position, target.position) > detectRange)
+		{
+			target = GetNearestEnemy();
+		}
 
 		if (target != null)
 		{
@@ -52,7 +61,7 @@ public class AutoAttack : MonoBehaviour
 		}
 	}
 
-	void ChaseEnemy(Transform target)
+	void ChaseEnemy(Transform target) // 적 추격
 
 	{
 		Vector2 direction = (target.position - transform.position).normalized;
@@ -69,7 +78,7 @@ public class AutoAttack : MonoBehaviour
 
 
 
-	void StopAndAttack(Transform target)
+	void StopAndAttack(Transform target) // 멈춰서 공격
 	{
 		anim.SetFloat("Speed", 0f);
 
@@ -81,7 +90,7 @@ public class AutoAttack : MonoBehaviour
 		}
 	}
 
-	void PerformAttack(Transform target)
+	void PerformAttack(Transform target)    // 공격
 	{
 		if (target == null) return;
 		anim.SetTrigger("Attack");
@@ -93,7 +102,7 @@ public class AutoAttack : MonoBehaviour
 		}
 	}
 
-	Transform GetNearestEnemy()
+	Transform GetNearestEnemy() //	가장 가까운 적 찾기
 	{
 		GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
 		Transform nearestEnemy = null;
