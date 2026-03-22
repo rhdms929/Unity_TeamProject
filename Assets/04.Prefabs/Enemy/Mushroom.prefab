@@ -183,6 +183,7 @@ MonoBehaviour:
   deathDestroyDelay: 1.5
   nextWaypointDistance: 0.3
   dropItemKey: Coin
+  expReward: 15
 --- !u!95 &8377341455400588714
 Animator:
   serializedVersion: 5

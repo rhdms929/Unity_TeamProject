@@ -32,9 +32,12 @@ public class Enemy : PoolAble, IDamageable
 	private float attackTimer;
 	private int currentHP;
 	private bool isDead;
-	private Coroutine returnCoroutine;	//	풀링 쓰면서 코루틴 함수
+	private Coroutine returnCoroutine;  //	풀링 쓰면서 코루틴 함수
 
-	private void Awake()
+    [Header("Reward")] //경험치 보상
+    public int expReward = 10;
+
+    private void Awake()
 	{
 		rb = GetComponent<Rigidbody2D>();
 		anim = GetComponent<Animator>();
@@ -206,7 +209,13 @@ public class Enemy : PoolAble, IDamageable
 		}
 		// 골드 소환은 코루틴에게 맡깁니다.
 		returnCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
-	}
+
+        PlayerStatus playerStatus = FindObjectOfType<PlayerStatus>(); //적이 죽으면 경험치 보상
+        if (playerStatus != null)
+        {
+            playerStatus.GainExp(expReward);
+        }
+    }
 
 	IEnumerator ReturnToPoolAfterDelay()
 	{
