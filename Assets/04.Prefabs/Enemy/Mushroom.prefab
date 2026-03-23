@@ -184,6 +184,7 @@ MonoBehaviour:
   nextWaypointDistance: 0.3
   dropItemKey: Coin
   expReward: 15
+  monsterName: "\uBA38\uC26C\uB8F8"
 --- !u!95 &8377341455400588714
 Animator:
   serializedVersion: 5

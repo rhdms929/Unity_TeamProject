@@ -37,6 +37,8 @@ public class Enemy : PoolAble, IDamageable
     [Header("Reward")] //경험치 보상
     public int expReward = 10;
 
+    [Header("Info")]
+    public string monsterName = "고블린";
     private void Awake()
 	{
 		rb = GetComponent<Rigidbody2D>();
@@ -226,9 +228,16 @@ public class Enemy : PoolAble, IDamageable
 		GameObject dropItem = ObjectPoolManager.instance.GetGo(dropItemKey);
 		if (dropItem != null)
 		{
-			dropItem.transform.position = transform.position;
-			dropItem.transform.rotation = Quaternion.identity;
-		}
+            dropItem.transform.position = transform.position;
+            dropItem.transform.rotation = Quaternion.identity;
+
+            GoldItem goldItem = dropItem.GetComponent<GoldItem>();
+            if (goldItem != null)
+            {
+                goldItem.goldAmount = 1;
+                goldItem.sourceMonsterName = monsterName;
+            }
+        }
 		// 적 오브젝트를 풀로 반환
 		ReleaseObject();
 	}

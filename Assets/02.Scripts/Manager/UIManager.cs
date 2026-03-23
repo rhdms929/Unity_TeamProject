@@ -16,6 +16,11 @@ public class UIManager : MonoBehaviour
     public GameObject optionsPanel;
     public GameObject statPanel;
 
+    [Header("Log")] //활동, 전리품 기록
+    public GameObject activityLogPanel;
+    public GameObject lootLogPanel;
+    public LogManager logManager;
+
     void Start()
     {
         Time.timeScale = 1f;
@@ -23,7 +28,7 @@ public class UIManager : MonoBehaviour
 		if (skillMenuPanel != null) skillMenuPanel.SetActive(false);
 		if (optionsPanel != null) optionsPanel.SetActive(false);
 		if (statPanel != null) statPanel.SetActive(false);
-	}
+    }
     void Update()
     {
         if (GameManager.instance != null && goldText != null) //coin
@@ -105,4 +110,36 @@ public class UIManager : MonoBehaviour
         Time.timeScale = 1f;
         SceneManager.LoadScene("StartScene");
     }
+
+    //----활동, 전리품 기록------
+    public void ToggleActivityLog()
+    {
+        if (activityLogPanel != null)
+        {
+            bool isActive = !activityLogPanel.activeSelf;
+            activityLogPanel.SetActive(isActive);
+        }
+    }
+
+    public void ToggleLootLog()
+    {
+        if (lootLogPanel != null)
+        {
+            bool isActive = !lootLogPanel.activeSelf;
+            lootLogPanel.SetActive(isActive);
+        }
+    }
+
+    public void CloseActivityLog()
+    {
+        if (activityLogPanel != null)
+            activityLogPanel.SetActive(false);
+    }
+
+    public void CloseLootLog()
+    {
+        if (lootLogPanel != null)
+            lootLogPanel.SetActive(false);
+    }
+    //----활동, 전리품 기록------
 }

@@ -383,11 +383,14 @@ public class PlayerStatus : MonoBehaviour, IDamageable
     //레벨업 함수 추가
     void LevelUp()
     {
+        int prevLevel = level;
         level++;                        //레벨 1 증가
         statPoint++;                    //스탯포인트 1 증가
         maxExp *= expGrowthMultiplier;  //다음 레벨업에 필요한 경험치 증가
 
         Debug.Log("레벨업! 현재 레벨: " + level);
+
+        uiManager.logManager.AddActivityLog($"플레이어 레벨 업! {prevLevel} -> {level}");
     }
     //경험치 UI 갱신 함수 추가
     void UpdateExpUI()

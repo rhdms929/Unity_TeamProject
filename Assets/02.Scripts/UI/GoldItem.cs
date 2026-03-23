@@ -7,15 +7,28 @@ public class GoldItem : PoolAble
 	public float acceleration = 10f;   // 가속도
 	public float waitTime = 0.5f;     // 애니메이션 보여주면서 머무는 시간
 
-	private Vector3 targetPos;
+    [Header("Gold Info")]
+    public int goldAmount = 1;
+	public string sourceMonsterName;
+
+    private Vector3 targetPos;
 	private float currentSpeed;
 	private bool flyToUI = false;
 
-	void OnEnable()
+    private UIManager uiManager;
+
+    void OnEnable()
 	{
-		flyToUI = false;
-		Invoke("SetupTargetAndFly", waitTime); 
-	}
+        flyToUI = false;
+
+        uiManager = FindObjectOfType<UIManager>();
+
+        // 풀링 재사용 대비 기본값 초기화
+        goldAmount = 1;
+        sourceMonsterName = "몬스터";
+
+        Invoke(nameof(SetupTargetAndFly), waitTime);
+    }
 
 	void SetupTargetAndFly()
 	{
@@ -45,11 +58,20 @@ public class GoldItem : PoolAble
 			currentSpeed * Time.deltaTime
 		);
 
-		// UI 도착 시 처리
-		if (Vector3.Distance(transform.position, targetPos) < 0.1f)
-		{
-			GameManager.instance.AddGold(1);
-			ReleaseObject();
-		}
-	}
+        // UI 도착 시 처리
+        if (Vector3.Distance(transform.position, targetPos) < 0.1f)
+        {
+            if (GameManager.instance != null)
+            {
+                GameManager.instance.AddGold(goldAmount);
+            }
+
+            if (uiManager != null && uiManager.logManager != null)
+            {
+                uiManager.logManager.AddLootLog($"{sourceMonsterName} > {goldAmount}금화");
+            }
+
+            ReleaseObject();
+        }
+    }
 }
