@@ -18,13 +18,19 @@ public class AutoAttack : MonoBehaviour
 	private SpriteRenderer sr;
 	private Rigidbody2D rb;
 
+	Pathfinding pathfinding;
+	List<Node> currentPath;
+	int pathIndex = 0;
+	float pathUpdateTimer = 0f;
+	public float pathUpdateDelay = 0.5f; // 경로 재계산 주기
+
 	void Start()
 	{
 		anim = GetComponent<Animator>();
 		sr = GetComponent<SpriteRenderer>();
 		rb = GetComponent<Rigidbody2D>();
 
-
+		pathfinding = FindObjectOfType<Pathfinding>(); 
 		isAutoMode = true;
 	}
 
@@ -61,19 +67,39 @@ public class AutoAttack : MonoBehaviour
 		}
 	}
 
-	void ChaseEnemy(Transform target) // 적 추격
-
+	void ChaseEnemy(Transform target)
 	{
-		Vector2 direction = (target.position - transform.position).normalized;
+		pathUpdateTimer += Time.deltaTime;
+
+		// 일정 시간마다 경로 다시 계산
+		if (pathUpdateTimer >= pathUpdateDelay)
+		{
+			currentPath = pathfinding.FindPath(transform.position, target.position);
+			pathIndex = 0;
+			pathUpdateTimer = 0f;
+		}
+
+		if (currentPath == null || pathIndex >= currentPath.Count) return;
+
+		Vector3 targetPos = currentPath[pathIndex].worldPos;
+		Vector2 direction = (targetPos - transform.position).normalized;
 
 		transform.position += (Vector3)direction * moveSpeed * Time.deltaTime;
+
+		// 노드에 도착하면 다음 노드로 이동
+		if (Vector2.Distance(transform.position, targetPos) < 0.2f)
+		{
+			pathIndex++;
+			if (pathIndex >= currentPath.Count)
+			{
+				pathIndex = currentPath.Count - 1;
+			}
+		}
 
 		anim.SetFloat("Speed", 1f);
 
 		if (direction.x > 0) sr.flipX = false;
-
 		else if (direction.x < 0) sr.flipX = true;
-
 	}
 
 

@@ -360,7 +360,8 @@ public class PlayerStatus : MonoBehaviour, IDamageable
         // 사망 시 조작 불능 처리 -> 일단 해둠
         GetComponent<PlayerMovement>().enabled = false;
         Invoke(nameof(ShowGameOver), 1.5f);
-    }
+		FindObjectOfType<TimeManager>().StopTimer();
+	}
     void ShowGameOver()
     {
         if (uiManager != null)
