@@ -13,10 +13,14 @@ public class AutoAttack : MonoBehaviour
 	public float attackDelay = 1f;
 	public int damage = 10;
 
+	[Header("Mana Settings")]
+	public float attackManaCost = 2f; // 공격 한 번당 소모할 마나량
+
 	private float timer = 0f;
 	private Animator anim;
 	private SpriteRenderer sr;
 	private Rigidbody2D rb;
+	private PlayerStatus playerStatus;
 
 	Pathfinding pathfinding;
 	List<Node> currentPath;
@@ -29,6 +33,7 @@ public class AutoAttack : MonoBehaviour
 		anim = GetComponent<Animator>();
 		sr = GetComponent<SpriteRenderer>();
 		rb = GetComponent<Rigidbody2D>();
+		playerStatus = GetComponent<PlayerStatus>();
 
 		pathfinding = FindObjectOfType<Pathfinding>(); 
 		isAutoMode = true;
@@ -111,8 +116,11 @@ public class AutoAttack : MonoBehaviour
 		timer += Time.deltaTime;
 		if (timer >= attackDelay)
 		{
-			PerformAttack(target);
-			timer = 0f;
+			if (playerStatus != null && playerStatus.UseMana(attackManaCost))
+			{
+				PerformAttack(target); // 실제 공격 실행
+				timer = 0f;            
+			}
 		}
 	}
 

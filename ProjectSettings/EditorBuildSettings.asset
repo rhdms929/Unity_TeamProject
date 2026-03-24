@@ -14,4 +14,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/01.Scenes/LoadScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/01.Scenes/GrassScene.unity
+    guid: c51595db9833293459cf6c042d704ab6
   m_configObjects: {}

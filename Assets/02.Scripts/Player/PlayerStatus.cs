@@ -4,7 +4,6 @@ using TMPro;
 
 public class PlayerStatus : MonoBehaviour, IDamageable
 {
-
     [Header("Auto Attack")] //attack delay 스탯 때문에 필요함
     public AutoAttack autoAttack;
 
@@ -95,6 +94,7 @@ public class PlayerStatus : MonoBehaviour, IDamageable
     [Header("Animation")]
     public Animator animator;
     private bool isDead = false;
+
     void Awake()
     {
         currentHp = maxHp;
