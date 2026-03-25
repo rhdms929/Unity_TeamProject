@@ -52,7 +52,7 @@ public class ZoneManager : MonoBehaviour //경험치 기준 해금 / 버튼 활성화 -->Pla
                 if (unlocked)
                     zones[i].buttonText.text = zones[i].zoneName;
                 else
-                    zones[i].buttonText.text = zones[i].zoneName + " (잠김)";
+                    zones[i].buttonText.text = zones[i].zoneName + " (Locked)";
             }
         }
     }

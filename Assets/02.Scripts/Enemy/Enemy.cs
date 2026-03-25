@@ -217,7 +217,12 @@ public class Enemy : PoolAble, IDamageable
         {
             playerStatus.GainExp(expReward);
         }
-    }
+		// 퀘스트 매니저에게 몬스터가 죽었다고 알리기
+		if (QuestManager.Instance != null)
+		{
+			QuestManager.Instance.OnMonsterKilled(gameObject.name);
+		}
+	}
 
 	IEnumerator ReturnToPoolAfterDelay()
 	{
