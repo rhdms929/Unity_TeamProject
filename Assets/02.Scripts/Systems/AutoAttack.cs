@@ -20,7 +20,7 @@ public class AutoAttack : MonoBehaviour
 	private Animator anim;
 	private SpriteRenderer sr;
 	private Rigidbody2D rb;
-	private PlayerStatus playerStatus;
+	private PlayerStats playerStats;
 
 	Pathfinding pathfinding;
 	List<Node> currentPath;
@@ -33,7 +33,7 @@ public class AutoAttack : MonoBehaviour
 		anim = GetComponent<Animator>();
 		sr = GetComponent<SpriteRenderer>();
 		rb = GetComponent<Rigidbody2D>();
-		playerStatus = GetComponent<PlayerStatus>();
+		playerStats = GetComponent<PlayerStats>();
 
 		pathfinding = FindObjectOfType<Pathfinding>(); 
 		isAutoMode = true;
@@ -116,7 +116,7 @@ public class AutoAttack : MonoBehaviour
 		timer += Time.deltaTime;
 		if (timer >= attackDelay)
 		{
-			if (playerStatus != null && playerStatus.UseMana(attackManaCost))
+			if (playerStats != null && playerStats.UseMana(attackManaCost))
 			{
 				PerformAttack(target); // 실제 공격 실행
 				timer = 0f;            

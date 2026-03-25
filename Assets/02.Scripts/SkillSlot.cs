@@ -33,7 +33,8 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
     private float cooldownTimer;   // 쿨타임 타이머
     private float autoCastTimer;   // 자동시전 타이머
 
-    private void Start()
+
+	private void Start()
     {
         if (mainCamera == null)
         {
@@ -128,7 +129,7 @@ public class SkillSlot : MonoBehaviour, IPointerClickHandler
     }
     private void CastSkill(Vector3 centerPos) // 스킬
     {
-		PlayerStatus status = player.GetComponent<PlayerStatus>();
+		PlayerStats status = player.GetComponent<PlayerStats>();
 
 		if (status != null)
 		{

@@ -18,7 +18,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	public void OnPointerClick(PointerEventData eventData)
 	{
 		// 씬에서 플레이어 상태 스크립트를 찾아 회복 실행
-		PlayerStatus player = FindObjectOfType<PlayerStatus>();
+		PlayerStats player = FindObjectOfType<PlayerStats>();
 
 		if (player != null)
 		{

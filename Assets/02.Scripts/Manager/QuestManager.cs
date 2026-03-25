@@ -5,81 +5,133 @@ using TMPro;
 
 public class QuestManager : MonoBehaviour
 {
-	public static QuestManager Instance; // 어디서든 접근 가능하게
+	public static QuestManager Instance;
 
-	[Header("Quest UI")]
-	public TextMeshProUGUI titleText;
-	public TextMeshProUGUI detailText;
-	public TextMeshProUGUI statusText;
+	public int currentZone = 1;
+	public float requiredExpForNextZone = 100f;
+	public PlayerStats playerStats;
 
 	[Header("Quest List")]
-	public List<QuestData> questList; // 여기서 퀘스트들을 순서대로 등록
-	private int currentQuestIndex = 0;
-	private int currentKillCount = 0;
+	public List<QuestData> questList;
+
+	[Header("Quest UI System")]
+	public GameObject questItemPrefab; 
+	public Transform questContent;     
+
+	// 생성된 UI 항목들을 담아둘 리스트 (나중에 점수 올릴 때 사용)
+	private List<QuestItem> activeQuestUIList = new List<QuestItem>();
 
 	void Awake() { Instance = this; }
+
 	void Start()
 	{
-		UpdateQuestDisplay(); // 게임 시작 시 첫 번째 퀘스트 출력
+		RefreshQuestUI();
 	}
 
-	// 몬스터가 죽을 때 호출할 함수
+	// 몬스터가 죽을 때 호출
 	public void OnMonsterKilled(string monsterName)
 	{
-		if (currentQuestIndex >= questList.Count) return;
+		bool anyQuestUpdated = false;
 
-		QuestData currentQuest = questList[currentQuestIndex];
-
-		// 현재 퀘스트의 목표 몬스터인지 확인
-		if (monsterName.Contains(currentQuest.targetMonsterName))
+		foreach (QuestData quest in questList)
 		{
-			currentKillCount++;
-			UpdateQuestDisplay();
-
-			if (currentKillCount >= currentQuest.targetCount)
+			// 1. 현재 구역 퀘스트이고, 아직 미완료이며, 몬스터 이름이 일치하는지 확인
+			if (quest.zoneNumber == currentZone && !quest.isCompleted && monsterName.Contains(quest.targetMonsterName))
 			{
-				CompleteQuest();
+				quest.currentCount++;
+				anyQuestUpdated = true;
+
+				if (quest.currentCount >= quest.targetCount)
+				{
+					CompleteQuest(quest);
+				}
+			}
+		}
+
+		if (anyQuestUpdated)
+		{
+			UpdateAllQuestUI();
+		}
+	}
+
+	// 현재 구역의 모든 퀘스트 UI를 생성 
+	public void RefreshQuestUI()
+	{
+		// 1. 기존 UI 싹 지우기
+		foreach (Transform child in questContent)
+		{
+			Destroy(child.gameObject);
+		}
+		activeQuestUIList.Clear();
+
+		// 2. 현재 구역에 맞는 퀘스트만 생성
+		foreach (QuestData data in questList)
+		{
+			if (data.zoneNumber == currentZone)
+			{
+				GameObject obj = Instantiate(questItemPrefab, questContent);
+				QuestItem itemScript = obj.GetComponent<QuestItem>();
+
+				if (itemScript != null)
+				{
+					// QuestItem 스크립트에 데이터 주입
+					itemScript.Setup(data.questTitle, data.questDescription, data.currentCount, data.targetCount, data.isCompleted);
+					activeQuestUIList.Add(itemScript);
+				}
 			}
 		}
 	}
 
-	void UpdateQuestDisplay()
+	// 생성된 UI의 텍스트만 실시간으로 업데이트
+	void UpdateAllQuestUI()
 	{
-		QuestData q = questList[currentQuestIndex];
-		titleText.text = q.questTitle;
-		detailText.text = $"- {q.questDescription} ({currentKillCount}/{q.targetCount})";
-		statusText.text = "- 완료여부 : [ <color=red>미완료</color> ]";
+		int uiIndex = 0;
+		foreach (QuestData data in questList)
+		{
+			if (data.zoneNumber == currentZone && uiIndex < activeQuestUIList.Count)
+			{
+				activeQuestUIList[uiIndex].Setup(data.questTitle, data.questDescription, data.currentCount, data.targetCount, data.isCompleted);
+				uiIndex++;
+			}
+		}
 	}
 
-	void CompleteQuest()
+	void CompleteQuest(QuestData quest)
 	{
-		statusText.text = "- 완료여부 : [ <color=green>완료</color> ]";
+		quest.isCompleted = true;
 
-		// 현재 완료한 퀘스트 데이터를 가져오기
-		QuestData currentQuest = questList[currentQuestIndex];
+		LogManager.Instance.AddActivityLog($"<color=green>[퀘스트 완료]</color> {quest.questTitle}");
 
-		// 활동 기록
-		LogManager log = Object.FindAnyObjectByType<LogManager>();
-		if (log != null)
-		{
-			log.AddActivityLog($"<color=green>[퀘스트 완료]</color> {currentQuest.questTitle} 다음 임무를 확인하세요.");
-		}
-
-		Invoke("NextQuest", 2f);
+		// 구역 내 모든 퀘스트 완료 여부 체크
+		CheckZoneProgress();
 	}
 
-	void NextQuest()
+	void CheckZoneProgress()
 	{
-		currentQuestIndex++;
-		currentKillCount = 0;
+		// 현재 구역의 퀘스트가 모두 완료되었는지 확인
+		bool allDone = true;
+		foreach (var q in questList)
+		{
+			if (q.zoneNumber == currentZone && !q.isCompleted)
+			{
+				allDone = false;
+				break;
+			}
+		}
 
-		if (currentQuestIndex < questList.Count)
+		if (allDone)
 		{
-			UpdateQuestDisplay();
+			if (true)
+			{
+				Invoke("GoToNextZone", 2f);
+			}
 		}
-		else
-		{
-			titleText.text = "모든 퀘스트 완료!";
-		}
+	}
+
+	void GoToNextZone()
+	{
+		currentZone++;
+		LogManager.Instance.AddActivityLog($"[구역 해금] {currentZone}구역 임무 시작!");
+		RefreshQuestUI(); // 구역이 바뀌었으니 UI 새로고침
 	}
 }

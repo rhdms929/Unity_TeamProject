@@ -212,10 +212,10 @@ public class Enemy : PoolAble, IDamageable
 		// 골드 소환은 코루틴에게 맡깁니다.
 		returnCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
 
-        PlayerStatus playerStatus = FindObjectOfType<PlayerStatus>(); //적이 죽으면 경험치 보상
-        if (playerStatus != null)
+        PlayerStats PlayerStats = FindObjectOfType<PlayerStats>(); //적이 죽으면 경험치 보상
+        if (PlayerStats != null)
         {
-            playerStatus.GainExp(expReward);
+            PlayerStats.GainExp(expReward);
         }
 		// 퀘스트 매니저에게 몬스터가 죽었다고 알리기
 		if (QuestManager.Instance != null)

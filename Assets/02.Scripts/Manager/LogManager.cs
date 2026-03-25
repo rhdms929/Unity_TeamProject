@@ -5,14 +5,25 @@ using TMPro;
 using System.Text;
 public class LogManager : MonoBehaviour
 {
-    public TextMeshProUGUI activityLogText;
+	public static LogManager Instance;
+	public TextMeshProUGUI activityLogText;
     public TextMeshProUGUI lootLogText;
     public int maxLines = 20;
 
     private Queue<string> activityLines = new Queue<string>();
     private Queue<string> lootLines = new Queue<string>();
-
-    public void AddActivityLog(string message)
+	void Awake()
+	{
+		if (Instance == null)
+		{
+			Instance = this;
+		}
+		else
+		{
+			Destroy(gameObject); 
+		}
+	}
+	public void AddActivityLog(string message)
     {
         AddLine(activityLines, activityLogText, message);
     }
