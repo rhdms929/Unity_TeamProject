@@ -415,6 +415,7 @@ GameObject:
   - component: {fileID: 2761126892468153984}
   - component: {fileID: 8932289087814479169}
   - component: {fileID: 1709201945992788804}
+  - component: {fileID: 1522595022164742291}
   m_Layer: 5
   m_Name: QuestItem
   m_TagString: Untagged
@@ -439,10 +440,10 @@ RectTransform:
   - {fileID: 8441302592682721491}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 904.2463, y: 645}
-  m_SizeDelta: {x: 1348.4926, y: 198.0513}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -135, y: 119}
+  m_SizeDelta: {x: 1300, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5486612633225742366
 MonoBehaviour:
@@ -522,5 +523,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   titleText: {fileID: 2407825804235213378}
   descText: {fileID: 1836660196528885595}
-  progressText: {fileID: 0}
   statusText: {fileID: 115047699543246141}
+--- !u!114 &1522595022164742291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6430790574814919864}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IgnoreLayout: 0
+  m_MinWidth: -1
+  m_MinHeight: 150
+  m_PreferredWidth: -1
+  m_PreferredHeight: -1
+  m_FlexibleWidth: -1
+  m_FlexibleHeight: -1
+  m_LayoutPriority: 1

@@ -107,19 +107,18 @@ public class QuestManager : MonoBehaviour
 	}
 	public void DropItemCheck()
 	{
-		// 1. 20% 확률 체크 (0~100 중 20 이하)
+		// 20% 확률 체크 (0~100 중 20 이하)
 		if (Random.Range(0, 100) < 20)
 		{
 			string itemName = "체력 회복 아이템"; 
 
-			// 2. 활동 기록에 남기
+			// 활동 기록에 남기기
 			if (LogManager.Instance != null)
 			{
 				LogManager.Instance.AddActivityLog($"<color=yellow>[아이템 획득]</color> {itemName}을(를) 얻었습니다!");
 			}
 
-			// 3. 인벤토리 숫자 올리기 (현재 사용 중인 인벤토리 스크립트의 함수 호출)
-			// 예: InventoryManager.Instance.AddItem(itemName);
+			// 나중에 인벤토리 숫자 올리는 로직 여기서 추가할 예정..
 		}
 	}
 
