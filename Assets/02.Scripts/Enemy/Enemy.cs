@@ -243,8 +243,35 @@ public class Enemy : PoolAble, IDamageable
                 goldItem.sourceMonsterName = monsterName;
             }
         }
+		// 20% 확률 포션 드랍
+		CheckPotionDrop();
 		// 적 오브젝트를 풀로 반환
 		ReleaseObject();
+	}
+
+	// 확률을 계산하고 아이템 슬롯에 직접 넣기
+	void CheckPotionDrop()
+	{
+		// 1. 일단 20% 확률로 아이템이 나올지 결정
+		if (Random.Range(0, 100) < 20)
+		{
+			// 2. 아이템이 나오게 된다면 이번에 줄 아이템이 HP인지 MP인지 랜덤 결정 (0 또는 1)
+			// 0이면 HP_Potion, 1이면 MP_Potion
+			ItemSlot.ItemType selectedType = (Random.Range(0, 2) == 0)
+				? ItemSlot.ItemType.HP_Potion
+				: ItemSlot.ItemType.MP_Potion;
+
+			// 3. 씬에 있는 모든 ItemSlot을 뒤져서 선택된 타입과 일치하는 슬롯에 아이템 추가
+			ItemSlot[] allSlots = FindObjectsOfType<ItemSlot>();
+			foreach (ItemSlot slot in allSlots)
+			{
+				if (slot.type == selectedType)
+				{
+					slot.AddItem(1);
+					break; 
+				}
+			}
+		}
 	}
 
 	// 적 범위 시각화입니당
