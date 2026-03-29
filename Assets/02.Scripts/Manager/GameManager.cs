@@ -8,7 +8,6 @@ public class GameManager : MonoBehaviour
 
 	public double currentGold = 0;
 	public Transform goldIcon;
-	//public double goldPerSecond = 1;	//	1√ ∏∂¥Ÿ ∞ÒµÂ∞° 1æø ¡ı∞° (∏∑æ∆µ“)
 
 	void Awake()
 	{
@@ -22,20 +21,6 @@ public class GameManager : MonoBehaviour
 			Destroy(gameObject);
 		}
 	}
-
-    //void Start()                                                       (∏∑æ∆µ“)
-    //{																	 (∏∑æ∆µ“)
-    //	StartCoroutine(AutoGoldRoutine());								 (∏∑æ∆µ“)
-    //}																	 (∏∑æ∆µ“)
-    //																	 (∏∑æ∆µ“)
-    //IEnumerator AutoGoldRoutine()										 (∏∑æ∆µ“)
-    //{																	 (∏∑æ∆µ“)
-    //	while (true)													 (∏∑æ∆µ“)
-    //	{																 (∏∑æ∆µ“)
-    //		yield return new WaitForSeconds(1f); // 1√ ∏∂¥Ÿ Ω««‡	     (∏∑æ∆µ“)
-    //		AddGold(goldPerSecond);										 (∏∑æ∆µ“)
-    //	}																 (∏∑æ∆µ“)
-    //}																	 (∏∑æ∆µ“)
 
     public void AddGold(double points)
 	{

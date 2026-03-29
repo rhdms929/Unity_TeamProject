@@ -62,16 +62,21 @@ public class ZoneSpawner : MonoBehaviour //각 Zone 안에서 몬스터 스폰, zone이 해
         int maxTries = 30;
         int count = 0;
 
-        do
+		int waterLayer = LayerMask.GetMask("Obstacle");
+
+		do
         {
             point = new Vector2(
                 Random.Range(bounds.min.x, bounds.max.x),
                 Random.Range(bounds.min.y, bounds.max.y)
             );
             count++;
-        } while (!zoneCollider.OverlapPoint(point) && count < maxTries); // 폴리곤 콜라이더 영역 안일 때까지 반복
-        return point;
+        } while (count < maxTries &&
+			(!zoneCollider.OverlapPoint(point) || Physics2D.OverlapPoint(point, waterLayer) != null));
+		return point;
     }
+
+
     void OnTriggerEnter2D(Collider2D other)
     {
         if (!isUnlocked) return;
