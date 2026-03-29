@@ -15,27 +15,27 @@ public class ZoneManager : MonoBehaviour //경험치 기준 해금 / 버튼 활성화 -->Pla
         public Transform movePoint;            // 이동 위치
         public TextMeshProUGUI buttonText;     // 버튼 텍스트(선택)
     }
-
     [Header("Zone Info")]
     public ZoneData[] zones;
 
     [Header("Player")]
     public Transform player;
 
-    [Header("EXP")]
-    public int currentExp = 0;
+    private int currentExp = 0;
 
     void Start()
     {
         RefreshZones();
     }
-    public void AddExp(int amount)
+
+    // 외부에서 현재 경험치를 넘겨주면 그 값 기준으로 해금 갱신
+    public void SetExp(int exp)
     {
-        currentExp += amount;
-        Debug.Log("현재 경험치: " + currentExp);
+        currentExp = exp;
+        Debug.Log("ZoneManager 받은 경험치: " + currentExp);
         RefreshZones();
     }
-    public void RefreshZones()
+    void RefreshZones()
     {
         for (int i = 0; i < zones.Length; i++)
         {
@@ -52,7 +52,7 @@ public class ZoneManager : MonoBehaviour //경험치 기준 해금 / 버튼 활성화 -->Pla
                 if (unlocked)
                     zones[i].buttonText.text = zones[i].zoneName;
                 else
-                    zones[i].buttonText.text = zones[i].zoneName + " (Locked)";
+                    zones[i].buttonText.text = zones[i].zoneName + "\n(Locked)";
             }
         }
     }
@@ -62,15 +62,11 @@ public class ZoneManager : MonoBehaviour //경험치 기준 해금 / 버튼 활성화 -->Pla
             return;
 
         if (currentExp < zones[zoneIndex].unlockExp)
-        {
-            Debug.Log(zones[zoneIndex].zoneName + " 은 아직 잠겨있음");
             return;
-        }
 
         if (player != null && zones[zoneIndex].movePoint != null)
         {
             player.position = zones[zoneIndex].movePoint.position;
-            Debug.Log(zones[zoneIndex].zoneName + " 으로 이동");
         }
     }
 }

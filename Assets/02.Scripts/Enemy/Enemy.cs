@@ -32,13 +32,21 @@ public class Enemy : PoolAble, IDamageable
 	private float attackTimer;
 	private int currentHP;
 	private bool isDead;
-	private Coroutine returnCoroutine;  //	풀링 쓰면서 코루틴 함수
+    private bool hasDetectedPlayer; //플레이어를 감지했는지
+   // private Coroutine alertCoroutine; //alert코루틴 함수
+    private Coroutine returnCoroutine;  //	풀링 쓰면서 코루틴 함수
 
     [Header("Reward")] //경험치 보상
     public int expReward = 10;
 
     [Header("Info")]
     public string monsterName = "고블린";
+
+    [Header("Alert")]
+    public GameObject alertIcon;   // 느낌표 오브젝트
+    //public float alertShowTime = 0.6f; // 표시 시간
+
+    
     private void Awake()
 	{
 		rb = GetComponent<Rigidbody2D>();
@@ -54,8 +62,9 @@ public class Enemy : PoolAble, IDamageable
 		isDead = false;
 		attackTimer = 0f;
 		path = null; // 경로 초기화
+        hasDetectedPlayer = false;
 
-		if (rb != null)
+        if (rb != null)
 		{
 			rb.velocity = Vector2.zero;
 			rb.simulated = true;
@@ -69,7 +78,7 @@ public class Enemy : PoolAble, IDamageable
 			returnCoroutine = null;
 		}
 
-		if (target == null)
+        if (target == null)
 		{
 			GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
 			if (playerObj != null) target = playerObj.transform;
@@ -82,7 +91,9 @@ public class Enemy : PoolAble, IDamageable
 	private void OnDisable()
 	{
 		CancelInvoke("UpdatePath");
-	}
+        if (alertIcon != null)
+            alertIcon.SetActive(false);
+    }
 
 	void UpdatePath()
 	{
@@ -111,10 +122,22 @@ public class Enemy : PoolAble, IDamageable
 
 		float distance = Vector2.Distance(transform.position, target.position);
 
-		// 감지 범위 밖
-		if (distance > detectRange)
+        // 처음 감지한 순간 느낌표 표시
+        if (distance <= detectRange && !hasDetectedPlayer)
+        {
+            hasDetectedPlayer = true;
+            ShowAlert();
+        }
+
+        // 감지 범위 밖 -> 느낌표 끄기
+        if (distance > detectRange)
 		{
-			StopMoving();
+            hasDetectedPlayer = false;
+            if (alertIcon != null)
+			{
+				alertIcon.SetActive(false);
+            }
+            StopMoving();
 			return;
 		}
 
@@ -161,7 +184,7 @@ public class Enemy : PoolAble, IDamageable
 		{
 			targetIndex++;
 		}
-	}
+    }
 
 	void StopMoving()
 	{
@@ -182,8 +205,14 @@ public class Enemy : PoolAble, IDamageable
 		}
 		attackTimer = attackCooldown;
 	}
+    void ShowAlert() //!표시
+    {
+        if (alertIcon == null) return;
 
-	public void TakeDamage(int damage)
+        alertIcon.SetActive(true);
+    }
+
+    public void TakeDamage(int damage)
 	{
 		if (isDead) return;
 		currentHP -= damage;
@@ -209,8 +238,12 @@ public class Enemy : PoolAble, IDamageable
 			anim.SetFloat("Speed", 0f);
 			anim.SetTrigger("Death");
 		}
-		// 골드 소환은 코루틴에게 맡깁니다.
-		returnCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
+		if (alertIcon != null) //죽으면 ! 꺼주기
+		{
+			alertIcon.SetActive(false);
+		}
+        // 골드 소환은 코루틴에게 맡깁니다.
+        returnCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
 
         PlayerStats PlayerStats = FindObjectOfType<PlayerStats>(); //적이 죽으면 경험치 보상
         if (PlayerStats != null)
@@ -223,7 +256,6 @@ public class Enemy : PoolAble, IDamageable
 			QuestManager.Instance.OnMonsterKilled(gameObject.name);
 		}
 	}
-
 	IEnumerator ReturnToPoolAfterDelay()
 	{
 		// deathDestroyDelay 시간만큼 기다립니다 (애니메이션 재생 시간 등)

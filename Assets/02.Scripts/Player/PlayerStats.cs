@@ -95,6 +95,10 @@ public class PlayerStats : MonoBehaviour, IDamageable
     public Animator animator;
     private bool isDead = false;
 
+    [Header("Manager")]
+    private ZoneManager zoneManager;
+    private StatWindowUI statWindowUI;
+
     void Awake()
     {
         currentHp = maxHp;
@@ -103,9 +107,18 @@ public class PlayerStats : MonoBehaviour, IDamageable
 
     void Start()
     {
+        zoneManager = FindObjectOfType<ZoneManager>();
+        statWindowUI = FindObjectOfType<StatWindowUI>();
         UpdateAllStatusUI(); // 시작할 때 UI 초기화
         RefreshAllStatsUI();
         UpdateExpUI();
+
+        if (zoneManager != null)
+        {
+            zoneManager.SetExp(level);
+        }
+
+        RefreshStatWindowUI();
     }
 
     void Update()
@@ -379,6 +392,12 @@ public class PlayerStats : MonoBehaviour, IDamageable
             currentExp -= maxExp;
             LevelUp();
         }
+
+        if (zoneManager != null)
+        {
+            zoneManager.SetExp(level);
+        }
+
         RefreshAllStatsUI();
     }
     //레벨업 함수 추가
@@ -488,4 +507,37 @@ public class PlayerStats : MonoBehaviour, IDamageable
 
         //Debug.Log($"마나 회복 현재 MP: {currentMp}");
     }
+    //현재 내 stat 정보 불러오기 위해  (StatWindowUI 에서 씀)
+    void RefreshStatWindowUI()
+    {
+        if (statWindowUI != null)
+        {
+            statWindowUI.RefreshUI();
+        }
+    }
+    public int GetCurrentHP()
+    {
+        return currentHp;
+    }
+
+    public int GetCurrentMP()
+    {
+        return (int)currentMp;
+    }
+
+    public int GetBonusDamage()
+    {
+        return autoAttack != null ? autoAttack.damage : 0;
+    }
+
+    public float GetRegen()
+    {
+        return hpRegen;
+    }
+
+    public float GetSpeed()
+    {
+        return playerMovement != null ? playerMovement.speed : 0f;
+    }
+    //(StatWindowUI 에서 씀)
 }
