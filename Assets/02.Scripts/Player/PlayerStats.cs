@@ -126,21 +126,6 @@ public class PlayerStats : MonoBehaviour, IDamageable
         RegenerateMana(); //마나 회복
         RegenerateHP();
         UpdateHpMpUI();
-
-        //   float targetHpRatio = (float)currentHp / maxHp;
-        //	float targetMpRatio = currentMp / maxMp;
-        //
-        //	// HP 바 
-        //	if (topHpFill != null) topHpFill.fillAmount = Mathf.Lerp(topHpFill.fillAmount, targetHpRatio, Time.deltaTime * 5f);
-        //	if (bottomHpFill != null) bottomHpFill.fillAmount = Mathf.Lerp(bottomHpFill.fillAmount, targetHpRatio, Time.deltaTime * 5f);
-        //
-        //	// MP 바 
-        //	if (topMpFill != null) topMpFill.fillAmount = Mathf.Lerp(topMpFill.fillAmount, targetMpRatio, Time.deltaTime * 5f);
-        //	if (bottomMpFill != null) bottomMpFill.fillAmount = Mathf.Lerp(bottomMpFill.fillAmount, targetMpRatio, Time.deltaTime * 5f);
-        //
-        //	// 텍스트는 즉시 업데이트
-        //	if (hpText != null) hpText.text = $"{currentHp} / {maxHp}";
-        //	if (mpText != null) mpText.text = $"{(int)currentMp} / {(int)maxMp}";
     }
 
     //power
@@ -355,6 +340,8 @@ public class PlayerStats : MonoBehaviour, IDamageable
         currentHp -= damage;
         currentHp = Mathf.Clamp(currentHp, 0, maxHp);
 
+        RefreshStatWindowUI(); //stats창
+
         if (currentHp <= 0)
             Die();
     }
@@ -470,6 +457,7 @@ public class PlayerStats : MonoBehaviour, IDamageable
         UpdateMPRegenUI();
         UpdateSpeedUI();
         UpdateExpUI();
+        RefreshStatWindowUI(); //stats 창도 같이 갱신될 수 있게
     }
 
     //(SkillSlot 에서 호출)
@@ -478,6 +466,7 @@ public class PlayerStats : MonoBehaviour, IDamageable
         if (currentMp >= amount)
         {
             currentMp -= amount; // 마나 차감
+            RefreshStatWindowUI(); //stats창
             return true;
         }
         else
@@ -495,6 +484,7 @@ public class PlayerStats : MonoBehaviour, IDamageable
         currentHp = Mathf.Clamp(currentHp, 0, maxHp);
 
         //Debug.Log($"체력 회복 현재 HP: {currentHp}");
+        RefreshStatWindowUI(); //stats창
     }
 
     // 마나 회복 (ItemSlot에서 호출)
@@ -506,6 +496,7 @@ public class PlayerStats : MonoBehaviour, IDamageable
         currentMp = Mathf.Clamp(currentMp, 0, maxMp);
 
         //Debug.Log($"마나 회복 현재 MP: {currentMp}");
+        RefreshStatWindowUI(); //stats창
     }
     //현재 내 stat 정보 불러오기 위해  (StatWindowUI 에서 씀)
     void RefreshStatWindowUI()

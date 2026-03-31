@@ -6,14 +6,16 @@ public class StatWindowUI : MonoBehaviour
 {
     public PlayerStats playerStats;
 
-    [Header("Stat Values")]
+    [Header("Texts")]
     public TextMeshProUGUI hpText;
     public TextMeshProUGUI mpText;
+    public TextMeshProUGUI damageText;
+    public TextMeshProUGUI attackDelayText;
+    public TextMeshProUGUI hpRegenText;
+    public TextMeshProUGUI mpRegenText;
+    public TextMeshProUGUI speedText;
     public TextMeshProUGUI levelText;
     public TextMeshProUGUI statPointText;
-    public TextMeshProUGUI damageText;
-    public TextMeshProUGUI regenText;
-    public TextMeshProUGUI speedText;
 
     void Start()
     {
@@ -27,25 +29,14 @@ public class StatWindowUI : MonoBehaviour
     {
         if (playerStats == null) return;
 
-        if (hpText != null)
-            hpText.text = playerStats.GetCurrentHP().ToString();
-
-        if (mpText != null)
-            mpText.text = playerStats.GetCurrentMP().ToString();
-
-        if (levelText != null)
-            levelText.text = playerStats.level.ToString();
-
-        if (statPointText != null)
-            statPointText.text = playerStats.statPoint.ToString();
-
-        if (damageText != null)
-            damageText.text = playerStats.GetBonusDamage().ToString();
-
-        if (regenText != null)
-            regenText.text = playerStats.GetRegen().ToString("F1");
-
-        if (speedText != null)
-            speedText.text = playerStats.GetSpeed().ToString("F1");
+        hpText.text = playerStats.GetCurrentHP().ToString();
+        mpText.text = playerStats.GetCurrentMP().ToString();
+        damageText.text = playerStats.GetBonusDamage().ToString();
+        attackDelayText.text = playerStats.autoAttack.attackDelay.ToString("F1");
+        hpRegenText.text = playerStats.hpRegen.ToString("F1");
+        mpRegenText.text = playerStats.mpRegen.ToString("F1");
+        speedText.text = playerStats.GetSpeed().ToString("F1");
+        levelText.text = playerStats.level.ToString();
+        statPointText.text = playerStats.statPoint.ToString();
     }
 }
