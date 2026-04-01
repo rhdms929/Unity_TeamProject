@@ -6,6 +6,8 @@ using TMPro;
 
 public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
+	[Header("Item Configuration")]
+	public ItemData itemData;
 	// 아이템 종류 선택
 	public enum ItemType { HP_Potion, MP_Potion }
 	public ItemType type;
@@ -45,6 +47,14 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
 	public void OnPointerClick(PointerEventData eventData)
 	{
+		if (itemData != null)
+		{
+			InventoryUI invUI = FindObjectOfType<InventoryUI>();
+			if (invUI != null)
+			{
+				invUI.OnItemSelected(itemData.buyPrice);
+			}
+		}
 		if (itemCount <= 0) return;
 		// 씬에서 플레이어 상태 스크립트를 찾아 회복 실행
 		PlayerStats player = FindObjectOfType<PlayerStats>();
@@ -63,6 +73,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
 	public void OnPointerEnter(PointerEventData eventData)
 	{
+
 		if (ItemTooltip.instance != null)
 		{
 			ItemTooltip.instance.Show(itemName, itemDescription, tooltipOffset);

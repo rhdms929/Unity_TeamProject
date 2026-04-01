@@ -25,6 +25,13 @@ public class GameManager : MonoBehaviour
     public void AddGold(double points)
 	{
 		currentGold += points;
-		Debug.Log(" " + currentGold);
+		Debug.Log("현재 골드: " + currentGold);
+
+		// 가방 UI가 씬에 있다면, 글자를 바로 바꿔줌
+		InventoryUI invUI = FindObjectOfType<InventoryUI>();
+		if (invUI != null)
+		{
+			invUI.RefreshMyGold();
+		}
 	}
 }
