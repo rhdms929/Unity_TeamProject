@@ -6,14 +6,16 @@ public class StatWindowUI : MonoBehaviour
 {
     public PlayerStats playerStats;
 
-    [Header("Stat Values")]
-    public TextMeshProUGUI hpText;
-    public TextMeshProUGUI mpText;
-    public TextMeshProUGUI levelText;
-    public TextMeshProUGUI statPointText;
-    public TextMeshProUGUI damageText;
-    public TextMeshProUGUI regenText;
-    public TextMeshProUGUI speedText;
+    [Header("Texts")]
+    public TextMeshProUGUI hpValue;
+    public TextMeshProUGUI mpValue;
+    public TextMeshProUGUI damageValue;
+    public TextMeshProUGUI atkSpeedValue;
+    public TextMeshProUGUI hpRegenValue;
+    public TextMeshProUGUI mpRegenValue;
+    public TextMeshProUGUI speedValue;
+    public TextMeshProUGUI levelValue;
+    public TextMeshProUGUI statPointValue;
 
     void Start()
     {
@@ -27,25 +29,14 @@ public class StatWindowUI : MonoBehaviour
     {
         if (playerStats == null) return;
 
-        if (hpText != null)
-            hpText.text = playerStats.GetCurrentHP().ToString();
-
-        if (mpText != null)
-            mpText.text = playerStats.GetCurrentMP().ToString();
-
-        if (levelText != null)
-            levelText.text = playerStats.level.ToString();
-
-        if (statPointText != null)
-            statPointText.text = playerStats.statPoint.ToString();
-
-        if (damageText != null)
-            damageText.text = playerStats.GetBonusDamage().ToString();
-
-        if (regenText != null)
-            regenText.text = playerStats.GetRegen().ToString("F1");
-
-        if (speedText != null)
-            speedText.text = playerStats.GetSpeed().ToString("F1");
+        hpValue.text = playerStats.GetCurrentHP().ToString();
+        mpValue.text = playerStats.GetCurrentMP().ToString();
+        damageValue.text = playerStats.GetBonusDamage().ToString();
+        atkSpeedValue.text = playerStats.autoAttack.attackDelay.ToString("F1");
+        hpRegenValue.text = playerStats.hpRegen.ToString("F1");
+        mpRegenValue.text = playerStats.mpRegen.ToString("F1");
+        speedValue.text = playerStats.GetSpeed().ToString("F1");
+        levelValue.text = playerStats.level.ToString();
+        statPointValue.text = playerStats.statPoint.ToString();
     }
 }

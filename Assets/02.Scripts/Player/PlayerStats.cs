@@ -354,7 +354,7 @@ public class PlayerStats : MonoBehaviour, IDamageable
 
         currentHp -= damage;
         currentHp = Mathf.Clamp(currentHp, 0, maxHp);
-
+        RefreshStatWindowUI();//stat 창
         if (currentHp <= 0)
             Die();
     }
@@ -470,6 +470,7 @@ public class PlayerStats : MonoBehaviour, IDamageable
         UpdateMPRegenUI();
         UpdateSpeedUI();
         UpdateExpUI();
+        RefreshStatWindowUI();//stat 창
     }
 
     //(SkillSlot 에서 호출)
@@ -478,6 +479,7 @@ public class PlayerStats : MonoBehaviour, IDamageable
         if (currentMp >= amount)
         {
             currentMp -= amount; // 마나 차감
+            RefreshStatWindowUI();//stat 창
             return true;
         }
         else
@@ -495,6 +497,7 @@ public class PlayerStats : MonoBehaviour, IDamageable
         currentHp = Mathf.Clamp(currentHp, 0, maxHp);
 
         //Debug.Log($"체력 회복 현재 HP: {currentHp}");
+        RefreshStatWindowUI();//stat 창
     }
 
     // 마나 회복 (ItemSlot에서 호출)
@@ -506,6 +509,7 @@ public class PlayerStats : MonoBehaviour, IDamageable
         currentMp = Mathf.Clamp(currentMp, 0, maxMp);
 
         //Debug.Log($"마나 회복 현재 MP: {currentMp}");
+        RefreshStatWindowUI();//stat 창
     }
     //현재 내 stat 정보 불러오기 위해  (StatWindowUI 에서 씀)
     void RefreshStatWindowUI()
