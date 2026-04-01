@@ -180,13 +180,15 @@ MonoBehaviour:
   attackRange: 0.7
   damage: 1
   attackCooldown: 1
-  maxHP: 3
+  maxHP: 30
   deathDestroyDelay: 1.5
   nextWaypointDistance: 0.3
   dropItemKey: Coin
   expReward: 10
   monsterName: "\uB208\uB561\uC774"
   alertIcon: {fileID: 6491562238026562523}
+  damageTextPrefab: {fileID: 4879350082499059422, guid: 97237eb8cf5f7ee45b780a6eb75a0357, type: 3}
+  damageTextOffset: {x: 0, y: 1.2, z: 0}
 --- !u!95 &8377341455400588714
 Animator:
   serializedVersion: 5

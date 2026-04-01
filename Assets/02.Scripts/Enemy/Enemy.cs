@@ -44,9 +44,12 @@ public class Enemy : PoolAble, IDamageable
 
     [Header("Alert")]
     public GameObject alertIcon;   // 느낌표 오브젝트
-    //public float alertShowTime = 0.6f; // 표시 시간
+                                   //public float alertShowTime = 0.6f; // 표시 시간
 
-    
+    [Header("Damage Text")] //적 위에 데미지 수치 보이게 하기
+    public GameObject damageTextPrefab;
+    public Vector3 damageTextOffset = new Vector3(0, 1.2f, 0);
+
     private void Awake()
 	{
 		rb = GetComponent<Rigidbody2D>();
@@ -215,7 +218,8 @@ public class Enemy : PoolAble, IDamageable
     public void TakeDamage(int damage)
 	{
 		if (isDead) return;
-		currentHP -= damage;
+        ShowDamageText(damage); //데미지 수치 보이게 
+        currentHP -= damage;
 		if (currentHP <= 0) Die();
 	}
 
@@ -326,4 +330,16 @@ public class Enemy : PoolAble, IDamageable
 			}
 		}
 	}
+    void ShowDamageText(int damage) //적 데미지 수치 보이게
+    {
+        if (damageTextPrefab == null) return;
+
+        GameObject textObj = Instantiate(damageTextPrefab, transform.position + damageTextOffset, Quaternion.identity);
+        DamageText damageText = textObj.GetComponent<DamageText>();
+
+        if (damageText != null)
+        {
+            damageText.SetDamage(damage);
+        }
+    }
 }
