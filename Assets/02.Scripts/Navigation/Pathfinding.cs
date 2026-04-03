@@ -26,50 +26,59 @@ public class Pathfinding : MonoBehaviour
 			Node currentNode = openSet[0];
 			for (int i = 1; i < openSet.Count; i++)
 			{
-				if (openSet[i].fCost < currentNode.fCost || openSet[i].fCost == currentNode.fCost && openSet[i].hCost < currentNode.hCost)
+				if (openSet[i].fCost < currentNode.fCost ||
+					openSet[i].fCost == currentNode.fCost &&
+					openSet[i].hCost < currentNode.hCost)
 					currentNode = openSet[i];
 			}
 
 			openSet.Remove(currentNode);
 			closedSet.Add(currentNode);
 
-			if (currentNode == targetNode) return RetracePath(startNode, targetNode);
+			if (currentNode == targetNode)
+				return RetracePath(startNode, targetNode);
 
 			foreach (Node neighbor in grid.GetNeighbors(currentNode))
 			{
 				if (!neighbor.walkable || closedSet.Contains(neighbor)) continue;
 
-				int newCostToNeighbor = currentNode.gCost + GetDistance(currentNode, neighbor);
-				if (newCostToNeighbor < neighbor.gCost || !openSet.Contains(neighbor))
+				int newCost = currentNode.gCost + GetDistance(currentNode, neighbor);
+				if (newCost < neighbor.gCost || !openSet.Contains(neighbor))
 				{
-					neighbor.gCost = newCostToNeighbor;
+					neighbor.gCost = newCost;
 					neighbor.hCost = GetDistance(neighbor, targetNode);
 					neighbor.parent = currentNode;
-					if (!openSet.Contains(neighbor)) openSet.Add(neighbor);
+
+					if (!openSet.Contains(neighbor))
+						openSet.Add(neighbor);
 				}
 			}
 		}
 		return null;
 	}
-
 	List<Node> RetracePath(Node startNode, Node endNode)
 	{
 		List<Node> path = new List<Node>();
-		Node currentNode = endNode;
-		while (currentNode != startNode)
+		Node current = endNode;
+
+		while (current != startNode)
 		{
-			path.Add(currentNode);
-			currentNode = currentNode.parent;
+			path.Add(current);
+			current = current.parent;
 		}
+
 		path.Reverse();
 		return path;
 	}
 
-	int GetDistance(Node nodeA, Node nodeB)
+	int GetDistance(Node a, Node b)
 	{
-		int dstX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
-		int dstY = Mathf.Abs(nodeA.gridY - nodeB.gridY);
-		if (dstX > dstY) return 14 * dstY + 10 * (dstX - dstY);
-		return 14 * dstX + 10 * (dstY - dstX);
+		int dstX = Mathf.Abs(a.gridX - b.gridX);
+		int dstY = Mathf.Abs(a.gridY - b.gridY);
+
+		if (dstX > dstY)
+			return 14 * dstY + 10 * (dstX - dstY);
+		else
+			return 14 * dstX + 10 * (dstY - dstX);
 	}
 }

@@ -9,7 +9,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	[Header("Item Configuration")]
 	public ItemData itemData;
 	// 아이템 종류 선택
-	public enum ItemType { HP_Potion, MP_Potion }
+	public enum ItemType { HP_Potion, MP_Potion, HP_Potion_Big, MP_Potion_Big }
 	public ItemType type;
 	public float healAmount = 50f; // 회복 수치
 
@@ -64,6 +64,10 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 			if (type == ItemType.HP_Potion)
 				player.HealHP(healAmount);
 			else if (type == ItemType.MP_Potion)
+				player.HealMP(healAmount);
+			else if (type == ItemType.HP_Potion_Big)
+				player.HealHP(healAmount);
+			else if (type == ItemType.MP_Potion_Big)
 				player.HealMP(healAmount);
 
 			itemCount--; 
