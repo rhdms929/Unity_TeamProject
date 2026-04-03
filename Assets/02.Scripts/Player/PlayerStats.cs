@@ -387,7 +387,10 @@ public class PlayerStats : MonoBehaviour, IDamageable
     {
         currentExp += amount;
 
-        while (currentExp >= maxExp)
+		if (QuestManager.Instance != null)
+			QuestManager.Instance.OnEXPGained((int)amount);
+
+		while (currentExp >= maxExp)
         {
             currentExp -= maxExp;
             LevelUp();
