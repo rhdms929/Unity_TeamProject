@@ -32,7 +32,11 @@ public class LogManager : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
+    void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
     void Start()
     {
         StartCoroutine(SetStartScrollPosition());

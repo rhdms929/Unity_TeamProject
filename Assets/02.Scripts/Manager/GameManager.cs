@@ -34,4 +34,9 @@ public class GameManager : MonoBehaviour
 			invUI.RefreshMyGold();
 		}
 	}
+    public void ResetForNewRun()
+    {
+        currentGold = 0;
+        goldIcon = null;
+    }
 }

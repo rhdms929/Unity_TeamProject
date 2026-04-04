@@ -21,13 +21,13 @@ public class UIManager : MonoBehaviour
     public GameObject lootLogPanel;
     public LogManager logManager;
 
-    void Start()
+    void Awake()
     {
         Time.timeScale = 1f;
-		if (gameOverPanel != null) gameOverPanel.SetActive(false);
-		if (skillMenuPanel != null) skillMenuPanel.SetActive(false);
-		if (optionsPanel != null) optionsPanel.SetActive(false);
-		if (statPanel != null) statPanel.SetActive(false);
+        if (gameOverPanel != null) gameOverPanel.SetActive(false);
+        if (skillMenuPanel != null) skillMenuPanel.SetActive(false);
+        if (optionsPanel != null) optionsPanel.SetActive(false);
+        if (statPanel != null) statPanel.SetActive(false);
     }
     void Update()
     {
@@ -103,11 +103,19 @@ public class UIManager : MonoBehaviour
     public void RetryGame() //retry 버튼
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+        if (GameManager.instance != null)
+            GameManager.instance.ResetForNewRun();
+
+        SceneManager.LoadScene("GameScene");
     }
     public void GoToMainMenu() //MainMenu 버튼
     {
         Time.timeScale = 1f;
+
+        if (GameManager.instance != null)
+            GameManager.instance.ResetForNewRun();
+
         SceneManager.LoadScene("StartScene");
     }
 
