@@ -68,5 +68,6 @@ public class ZoneManager : MonoBehaviour //경험치 기준 해금 / 버튼 활성화 -->Pla
         {
             player.position = zones[zoneIndex].movePoint.position;
         }
+
     }
 }

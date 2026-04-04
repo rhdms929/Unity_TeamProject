@@ -5,9 +5,9 @@ using TMPro;
 public class QuestManager : MonoBehaviour
 {
 	public static QuestManager Instance;
+
 	public int currentZone = 1;
 	public PlayerStats playerStats;
-	private QuestData selectedQuest;
 
 	[Header("Quest List")]
 	public List<QuestData> questList;
@@ -20,6 +20,7 @@ public class QuestManager : MonoBehaviour
 	public TextMeshProUGUI detailTitleText;
 	public TextMeshProUGUI detailDescText;
 
+	private QuestData selectedQuest;
 	private List<QuestItem> activeQuestUIList = new List<QuestItem>();
 
 	void Awake() { Instance = this; }
@@ -29,25 +30,61 @@ public class QuestManager : MonoBehaviour
 		RefreshQuestUI();
 	}
 
+	// 몬스터 처치 시 호출 - Kill 타입 퀘스트 카운트 갱신
 	public void OnMonsterKilled(string monsterName)
 	{
-		bool anyQuestUpdated = false;
+		bool anyUpdated = false;
+
 		foreach (QuestData quest in questList)
 		{
-			if (quest.zoneNumber == currentZone && !quest.isCompleted
-		   && quest.questType == QuestType.Kill 
-		   && monsterName.Contains(quest.targetMonsterName))
-			{
-				quest.currentCount++;
-				anyQuestUpdated = true;
-				if (quest.currentCount >= quest.targetCount)
-					CompleteQuest(quest);
-			}
+			if (quest.zoneNumber != currentZone) continue;
+			if (quest.isCompleted) continue;
+			if (quest.questType != QuestType.Kill) continue;
+			if (!monsterName.Contains(quest.targetMonsterName)) continue;
+
+			quest.currentCount++;
+			anyUpdated = true;
+
+			if (quest.currentCount >= quest.targetCount)
+				CompleteQuest(quest);
 		}
-		if (anyQuestUpdated)
+		if (anyUpdated)
 			UpdateAllQuestUI();
 	}
 
+	// 경험치 획득 시 호출 - EXP 타입 퀘스트 카운트 갱신
+	public void OnEXPGained(int amount)
+	{
+		foreach (QuestData quest in questList)
+		{
+			if (quest.zoneNumber != currentZone) continue;
+			if (quest.isCompleted) continue;
+			if (quest.questType != QuestType.EXP) continue;
+
+			quest.currentCount += amount;
+
+			if (quest.currentCount >= quest.targetCount)
+				CompleteQuest(quest);
+		}
+		UpdateAllQuestUI();
+	}
+	// 아이템 획득 시 호출 - Item 타입 퀘스트 카운트 갱신
+	public void OnItemGained()
+	{
+		foreach (QuestData quest in questList)
+		{
+			if (quest.zoneNumber != currentZone) continue;
+			if (quest.isCompleted) continue;
+			if (quest.questType != QuestType.Item) continue;
+
+			quest.currentCount++;
+
+			if (quest.currentCount >= quest.targetCount)
+				CompleteQuest(quest);
+		}
+		UpdateAllQuestUI();
+	}
+	// 현재 구역 퀘스트 UI 전체 재생성
 	public void RefreshQuestUI()
 	{
 		foreach (Transform child in questContent)
@@ -60,82 +97,45 @@ public class QuestManager : MonoBehaviour
 
 		foreach (QuestData data in questList)
 		{
-			if (data.zoneNumber == currentZone)
+			if (data.zoneNumber != currentZone) continue;
+
+			GameObject obj = Instantiate(questItemPrefab, questContent);
+			QuestItem itemScript = obj.GetComponent<QuestItem>();
+
+			if (itemScript != null)
 			{
-				GameObject obj = Instantiate(questItemPrefab, questContent);
-				QuestItem itemScript = obj.GetComponent<QuestItem>();
-				if (itemScript != null)
-				{
-					itemScript.Setup(data.questTitle, data.questDescription, data.currentCount, data.targetCount, data.isCompleted);
-					activeQuestUIList.Add(itemScript);
-				}
+				itemScript.Setup(data.questTitle, data.questDescription, data.currentCount, data.targetCount, data.isCompleted);
+				activeQuestUIList.Add(itemScript);
 			}
 		}
 	}
-
+	// 생성된 UI 텍스트만 갱신
 	void UpdateAllQuestUI()
 	{
 		int uiIndex = 0;
 		foreach (QuestData data in questList)
 		{
-			if (data.zoneNumber == currentZone && uiIndex < activeQuestUIList.Count)
-			{
-				activeQuestUIList[uiIndex].Setup(data.questTitle, data.questDescription, data.currentCount, data.targetCount, data.isCompleted);
-				uiIndex++;
-			}
+			if (data.zoneNumber != currentZone) continue;
+			if (uiIndex >= activeQuestUIList.Count) break;
+
+			activeQuestUIList[uiIndex].Setup(data.questTitle, data.questDescription, data.currentCount, data.targetCount, data.isCompleted);
+			uiIndex++;
 		}
 	}
 
-	// 경험치 획득 시 호출
-	public void OnEXPGained(int amount)
-	{
-		foreach (QuestData quest in questList)
-		{
-			if (quest.zoneNumber == currentZone && !quest.isCompleted && quest.questType == QuestType.EXP)
-			{
-				quest.currentCount += amount;
-				if (quest.currentCount >= quest.targetCount)
-					CompleteQuest(quest);
-			}
-		}
-		UpdateAllQuestUI();
-	}
-
-	// 아이템 획득 시 호출
-	public void OnItemGained()
-	{
-		foreach (QuestData quest in questList)
-		{
-			if (quest.zoneNumber == currentZone && !quest.isCompleted && quest.questType == QuestType.Item)
-			{
-				quest.currentCount++;
-				if (quest.currentCount >= quest.targetCount)
-					CompleteQuest(quest);
-			}
-		}
-		UpdateAllQuestUI();
-	}
-
+	// 퀘스트 클릭 시 하단 패널에 상세 정보 표시
 	public void ShowQuestDetail(string title, string desc, int current, int target, bool isDone)
 	{
 		selectedQuest = questList.Find(q => q.questTitle == title);
+
 		if (detailTitleText != null) detailTitleText.text = title;
 		if (detailDescText != null) detailDescText.text = desc;
 	}
 
-	// 완료 버튼 OnClick에 연결
+	// 완료 버튼 클릭 시 선택된 퀘스트 완료 처리
 	public void OnClickCompleteButton()
 	{
-		if (selectedQuest == null)
-		{
-			Debug.Log("선택된 퀘스트가 없습니다.");
-			return;
-		}
-		if (selectedQuest.isCompleted)
-		{
-			Debug.Log("이미 완료된 퀘스트입니다.");
-			return;
-		}
+		if (selectedQuest == null || selectedQuest.isCompleted) return;
 
 		CompleteQuest(selectedQuest);
 		UpdateAllQuestUI();
@@ -148,31 +148,24 @@ public class QuestManager : MonoBehaviour
 		UpdateAllQuestUI();
 		CheckZoneProgress();
 	}
-
+	// 몬스터 처치 시 20% 확률로 아이템 드랍 체크
 	public void DropItemCheck()
 	{
-		if (Random.Range(0, 100) < 20)
-		{
-			string itemName = "체력 회복 아이템";
-			if (LogManager.Instance != null)
-				LogManager.Instance.AddActivityLog($"<color=yellow>[아이템 획득]</color> {itemName}을(를) 얻었습니다!");
-			OnItemGained();
-		}
-	}
+		if (Random.Range(0, 100) >= 20) return;
 
+		string itemName = "체력 회복 아이템";
+		LogManager.Instance?.AddActivityLog($"<color=yellow>[아이템 획득]</color> {itemName}을(를) 얻었습니다!");
+		OnItemGained();
+	}
+	// 현재 구역의 모든 퀘스트 완료 시 다음 구역으로 이동
 	void CheckZoneProgress()
 	{
-		bool allDone = true;
 		foreach (var q in questList)
 		{
 			if (q.zoneNumber == currentZone && !q.isCompleted)
-			{
-				allDone = false;
-				break;
-			}
+				return;
 		}
-		if (allDone)
-			Invoke("GoToNextZone", 2f);
+		Invoke("GoToNextZone", 2f);
 	}
 
 	void GoToNextZone()

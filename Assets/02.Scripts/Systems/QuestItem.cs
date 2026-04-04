@@ -24,8 +24,12 @@ public class QuestItem : MonoBehaviour
 		_isDone = isDone;
 
 		if (titleText != null) titleText.text = title;
+
+		// 완료 여부에 따라 아이콘 표시
 		if (completedIcon != null) completedIcon.SetActive(isDone);
 	}
+
+	// 퀘스트 항목 클릭 시 상세 정보 표시
 	public void OnClick()
 	{
 		QuestManager.Instance.ShowQuestDetail(_title, _desc, _current, _target, _isDone);

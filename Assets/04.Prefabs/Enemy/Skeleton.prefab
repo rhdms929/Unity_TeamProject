@@ -149,7 +149,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.07, y: -0.01}
+  m_Offset: {x: 0.06, y: -0.01}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -160,7 +160,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.48, y: 0.55}
+  m_Size: {x: 0.21, y: 0.52}
   m_EdgeRadius: 0
 --- !u!114 &1129817029916103615
 MonoBehaviour:
@@ -185,7 +185,7 @@ MonoBehaviour:
   nextWaypointDistance: 0.3
   dropItemKey: Coin
   expReward: 10
-  monsterName: "\uB208\uB561\uC774"
+  monsterName: "\uC2A4\uCF08\uB808\uD1A4"
   alertIcon: {fileID: 3774595171950027040}
   damageTextPrefab: {fileID: 4879350082499059422, guid: 97237eb8cf5f7ee45b780a6eb75a0357, type: 3}
   damageTextOffset: {x: 0, y: 1.2, z: 0}
