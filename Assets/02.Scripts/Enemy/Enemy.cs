@@ -21,10 +21,15 @@ public class Enemy : PoolAble, IDamageable
 	private List<Node> path;
 	private int targetIndex;
 
-	[Header("Drop")]
-	[SerializeField] private string dropItemKey = "Coin";
+    [Header("Drop")]
+    [SerializeField] private string dropItemKey = "Coin";
 
-	private Rigidbody2D rb;
+    [Header("Potion Drop")]
+    public ItemData hpPotionData;
+    public ItemData mpPotionData;
+    [Range(0, 100)] public int potionDropChance = 20;
+
+    private Rigidbody2D rb;
 	private Animator anim;
 	private SpriteRenderer sr;
 	private Collider2D col;
@@ -285,33 +290,31 @@ public class Enemy : PoolAble, IDamageable
 		ReleaseObject();
 	}
 
-	// 확률을 계산하고 아이템 슬롯에 직접 넣기
-	void CheckPotionDrop()
-	{
-		// 1. 일단 20% 확률로 아이템이 나올지 결정
-		if (Random.Range(0, 100) < 20)
-		{
-			// 2. 아이템이 나오게 된다면 이번에 줄 아이템이 HP인지 MP인지 랜덤 결정 (0 또는 1)
-			// 0이면 HP_Potion, 1이면 MP_Potion
-			ItemSlot.ItemType selectedType = (Random.Range(0, 2) == 0)
-				? ItemSlot.ItemType.HP_Potion
-				: ItemSlot.ItemType.MP_Potion;
+    // 확률을 계산하고 아이템 슬롯에 직접 넣기
+    void CheckPotionDrop()
+    {
+        if (InventoryManager.Instance == null) return;
 
-			// 3. 씬에 있는 모든 ItemSlot을 뒤져서 선택된 타입과 일치하는 슬롯에 아이템 추가
-			ItemSlot[] allSlots = FindObjectsOfType<ItemSlot>();
-			foreach (ItemSlot slot in allSlots)
-			{
-				if (slot.type == selectedType)
-				{
-					slot.AddItem(1);
-					break; 
-				}
-			}
-		}
-	}
+        // potionDropChance% 확률로 드랍
+        if (Random.Range(0, 100) >= potionDropChance) return;
 
-	// 적 범위 시각화입니당
-	void OnDrawGizmosSelected()
+        // 50% 확률로 HP / MP 포션 선택
+        ItemData selectedPotion = (Random.Range(0, 2) == 0) ? hpPotionData : mpPotionData;
+
+        if (selectedPotion == null) return;
+
+        InventoryManager.Instance.AddItem(selectedPotion, 1);
+
+        if (LogManager.Instance != null)
+        {
+            LogManager.Instance.AddActivityLog(
+                $"<color=cyan>[드랍]</color> {monsterName}이(가) {selectedPotion.itemName}을(를) 떨어뜨렸습니다."
+            );
+        }
+    }
+
+    // 적 범위 시각화입니당
+    void OnDrawGizmosSelected()
 	{
 		Gizmos.color = Color.yellow;
 		Gizmos.DrawWireSphere(transform.position, detectRange);

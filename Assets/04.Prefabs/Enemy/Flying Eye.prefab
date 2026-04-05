@@ -139,6 +139,9 @@ MonoBehaviour:
   deathDestroyDelay: 1.5
   nextWaypointDistance: 0.3
   dropItemKey: Coin
+  hpPotionData: {fileID: 11400000, guid: 27e8f30ffddb819428a9dc7fc557f671, type: 2}
+  mpPotionData: {fileID: 11400000, guid: 963e03d362f6a7d48a76a2e8d0901570, type: 2}
+  potionDropChance: 20
   expReward: 10
   monsterName: "\uB208\uB561\uC774"
   alertIcon: {fileID: 6491562238026562523}
