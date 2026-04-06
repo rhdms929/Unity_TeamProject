@@ -70,33 +70,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         if (invUI != null)
         {
             invUI.OnItemSelected(currentEntry.itemData.buyPrice);
-        }
-
-        if (currentEntry.count <= 0) return;
-
-        PlayerStats player = FindObjectOfType<PlayerStats>();
-        if (player == null) return;
-
-        switch (currentEntry.itemData.itemType)
-        {
-            case ItemData.ItemType.HP_Potion:
-            case ItemData.ItemType.HP_Potion_Big:
-                player.HealHP(currentEntry.itemData.healAmount);
-                break;
-
-            case ItemData.ItemType.MP_Potion:
-            case ItemData.ItemType.MP_Potion_Big:
-                player.HealMP(currentEntry.itemData.healAmount);
-                break;
-        }
-
-        bool removed = InventoryManager.Instance.RemoveItem(currentEntry.itemData, 1);
-
-        if (removed && LogManager.Instance != null)
-        {
-            LogManager.Instance.AddActivityLog(
-                $"{currentEntry.itemData.itemName}을(를) 사용했습니다."
-            );
+            invUI.SelectInventoryItem(currentEntry);
         }
     }
 
