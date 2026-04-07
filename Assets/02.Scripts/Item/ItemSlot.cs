@@ -12,9 +12,6 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     public Image iconImage;
     public TextMeshProUGUI countText;
 
-    [Header("Tooltip")]
-    public Vector2 tooltipOffset = new Vector2(-100f, 200f);
-
     private InventoryEntry currentEntry;
 
     public void SetSlot(InventoryEntry entry)
@@ -51,7 +48,7 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             countText.text = "";
     }
 
-    void UpdateUI()
+    private void UpdateUI()
     {
         if (countText != null)
         {
@@ -59,6 +56,24 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
                 countText.text = currentEntry.count.ToString();
             else
                 countText.text = "";
+        }
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (currentEntry == null || currentEntry.itemData == null) return;
+
+        if (ItemTooltip.instance != null)
+        {
+            ItemTooltip.instance.Show(currentEntry.itemData);
+        }
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (ItemTooltip.instance != null)
+        {
+            ItemTooltip.instance.Clear();
         }
     }
 
@@ -74,61 +89,24 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
         }
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public void OnBeginDrag(PointerEventData eventData)
     {
         if (currentEntry == null || currentEntry.itemData == null) return;
 
-        if (ItemTooltip.instance != null)
-        {
-            ItemTooltip.instance.Show(
-                currentEntry.itemData.itemName,
-                currentEntry.itemData.itemDescription,
-                tooltipOffset
-            );
-        }
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        if (ItemTooltip.instance != null)
-            ItemTooltip.instance.Hide();
-    }
-
-    public void OnBeginDrag(PointerEventData eventData)
-    {
-        Debug.Log("ItemSlot OnBeginDrag");
-
-        if (currentEntry == null || currentEntry.itemData == null)
-        {
-            Debug.Log("드래그 실패: currentEntry 없음");
-            return;
-        }
-
-        if (!IsPotion(currentEntry.itemData))
-        {
-            Debug.Log("드래그 실패: 포션 아님");
-            return;
-        }
+        if (!IsPotion(currentEntry.itemData)) return;
 
         if (DraggedItemHolder.Instance != null)
         {
             DraggedItemHolder.Instance.StartDrag(currentEntry);
         }
-        else
-        {
-            Debug.Log("DraggedItemHolder.Instance 없음");
-        }
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        // 지금은 마우스 따라다니는 이미지 없으니까 비워둬도 됨
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log("ItemSlot OnEndDrag");
-        // 여기서 EndDrag() 하면 OnDrop 전에 데이터가 사라질 수 있어서 비우지 않음
     }
 
     private bool IsPotion(ItemData data)
