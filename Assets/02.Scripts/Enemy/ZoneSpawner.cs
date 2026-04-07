@@ -51,8 +51,13 @@ public class ZoneSpawner : MonoBehaviour //각 Zone 안에서 몬스터 스폰, zone이 해
     {
         // Collider 영역 내 랜덤 좌표 생성
         Vector2 spawnPos = GetRandomPointInCollider();
-        Instantiate(prefab, spawnPos, Quaternion.identity);
-    }
+		GameObject enemy = ObjectPoolManager.instance.GetGo(prefab.name);
+
+		if (enemy != null)
+			enemy.transform.position = spawnPos;
+		else
+			Instantiate(prefab, spawnPos, Quaternion.identity);
+	}
 
     Vector2 GetRandomPointInCollider()
     {

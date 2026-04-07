@@ -148,15 +148,7 @@ public class QuestManager : MonoBehaviour
 		UpdateAllQuestUI();
 		CheckZoneProgress();
 	}
-	// 몬스터 처치 시 20% 확률로 아이템 드랍 체크
-	public void DropItemCheck()
-	{
-		if (Random.Range(0, 100) >= 20) return;
-
-		string itemName = "체력 회복 아이템";
-		LogManager.Instance?.AddActivityLog($"<color=yellow>[아이템 획득]</color> {itemName}을(를) 얻었습니다!");
-		OnItemGained();
-	}
+	
 	// 현재 구역의 모든 퀘스트 완료 시 다음 구역으로 이동
 	void CheckZoneProgress()
 	{

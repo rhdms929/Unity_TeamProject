@@ -307,7 +307,7 @@ public class Enemy : PoolAble, IDamageable
 
         if (LogManager.Instance != null)
         {
-            LogManager.Instance.AddActivityLog(
+            LogManager.Instance.AddLootLog(
                 $"<color=cyan>[µå¶ø]</color> {monsterName}ÀÌ(°¡) {selectedPotion.itemName}À»(¸¦) ¶³¾î¶ß·È½À´Ï´Ù."
             );
         }
