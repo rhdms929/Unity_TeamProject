@@ -74,5 +74,12 @@ public class InventoryManager : MonoBehaviour //아이템 획득은 전부 이 코드로 들�
         InventoryUI ui = FindObjectOfType<InventoryUI>();
         if (ui != null)
             ui.RefreshInventoryUI();
+
+        ActionBarSlot[] actionSlots = FindObjectsOfType<ActionBarSlot>(true);
+        foreach (ActionBarSlot slot in actionSlots)
+        {
+            if (slot != null)
+                slot.RefreshUI();
+        }
     }
 }

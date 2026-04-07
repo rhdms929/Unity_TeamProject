@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 //툴팁, 클릭, 사용, 로그
-public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
     [Header("UI")]
     public Image iconImage;
@@ -92,5 +92,52 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if (ItemTooltip.instance != null)
             ItemTooltip.instance.Hide();
+    }
+
+    public void OnBeginDrag(PointerEventData eventData)
+    {
+        Debug.Log("ItemSlot OnBeginDrag");
+
+        if (currentEntry == null || currentEntry.itemData == null)
+        {
+            Debug.Log("드래그 실패: currentEntry 없음");
+            return;
+        }
+
+        if (!IsPotion(currentEntry.itemData))
+        {
+            Debug.Log("드래그 실패: 포션 아님");
+            return;
+        }
+
+        if (DraggedItemHolder.Instance != null)
+        {
+            DraggedItemHolder.Instance.StartDrag(currentEntry);
+        }
+        else
+        {
+            Debug.Log("DraggedItemHolder.Instance 없음");
+        }
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        // 지금은 마우스 따라다니는 이미지 없으니까 비워둬도 됨
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        Debug.Log("ItemSlot OnEndDrag");
+        // 여기서 EndDrag() 하면 OnDrop 전에 데이터가 사라질 수 있어서 비우지 않음
+    }
+
+    private bool IsPotion(ItemData data)
+    {
+        if (data == null) return false;
+
+        return data.itemType == ItemData.ItemType.HP_Potion ||
+               data.itemType == ItemData.ItemType.MP_Potion ||
+               data.itemType == ItemData.ItemType.HP_Potion_Big ||
+               data.itemType == ItemData.ItemType.MP_Potion_Big;
     }
 }
