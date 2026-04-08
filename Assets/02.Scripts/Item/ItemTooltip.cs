@@ -44,8 +44,8 @@ public class ItemTooltip : MonoBehaviour
             }
             else if (data.itemCategory == ItemCategory.Equipment)
             {
-                text += "\n\n[장비 정보]";
-                text += "\n공격력 +" + data.bonusAttack;
+                //text += "\n[장비 정보]";
+                text += "\n\n공격력 +" + data.bonusAttack;
                 text += "\n방어력 +" + data.bonusDefense;
                 text += "\n최대 HP +" + data.bonusHp;
                 text += "\n최대 MP +" + data.bonusMp;
