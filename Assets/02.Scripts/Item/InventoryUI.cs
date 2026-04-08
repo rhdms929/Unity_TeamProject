@@ -195,7 +195,7 @@ public class InventoryUI : MonoBehaviour //골드 표시, bag슬롯들 갱신 기능
         if (LogManager.Instance != null)
         {
             LogManager.Instance.AddActivityLog(
-                $"{currentItem.itemName} {currentItem.combineNeedCount}개를 합성해 {currentItem.nextItemData.itemName} 1개를 획득했습니다."
+                $"<color=green>[합성 성공]</color> {currentItem.nextItemData.itemName} 1개를 획득"
             );
         }
 

@@ -38,7 +38,7 @@ public class InventoryManager : MonoBehaviour //아이템 획득은 전부 이 코드로 들�
         if (showLog && LogManager.Instance != null)
         {
             LogManager.Instance.AddLootLog(
-				$"<color=yellow>[아이템]</color> {data.itemName} {amount}개"
+				$"{data.itemName} {amount}개 획득"
 			);
         }
 

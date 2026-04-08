@@ -305,12 +305,12 @@ public class Enemy : PoolAble, IDamageable
 
         InventoryManager.Instance.AddItem(selectedPotion, 1);
 
-        if (LogManager.Instance != null)
-        {
-            LogManager.Instance.AddLootLog(
-                $"{monsterName}이(가) {selectedPotion.itemName}을(를) 떨어뜨렸습니다."
-            );
-        }
+       // if (LogManager.Instance != null)
+       // {
+       //     LogManager.Instance.AddLootLog(
+       //         $"{monsterName}이(가) {selectedPotion.itemName}을(를) 떨어뜨렸습니다."
+       //     );
+       // }
     }
 
     // 적 범위 시각화입니당

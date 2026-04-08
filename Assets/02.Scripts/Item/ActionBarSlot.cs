@@ -104,7 +104,7 @@ public class ActionBarSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
         if (LogManager.Instance != null)
         {
             LogManager.Instance.AddActivityLog(
-                $"<color=lime>[사용]</color> {useItem.itemName} 1개 사용"
+                $"<color=green>[사용]</color>{useItem.itemName} 1개 사용"
             );
         }
 
