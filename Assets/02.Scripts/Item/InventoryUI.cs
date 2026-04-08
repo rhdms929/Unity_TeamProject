@@ -195,7 +195,7 @@ public class InventoryUI : MonoBehaviour //°ñµå Ç¥½Ã, bag½½·Ôµé °»½Å ±â´É
         if (LogManager.Instance != null)
         {
             LogManager.Instance.AddActivityLog(
-                $"<color=green>[ÇÕ¼º ¼º°ø]</color> {currentItem.nextItemData.itemName} 1°³¸¦ È¹µæ"
+                $"<color=green>[ÇÕ¼º]</color> {currentItem.nextItemData.itemName} 1°³ È¹µæ"
             );
         }
 

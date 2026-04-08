@@ -35,7 +35,7 @@ public class ShopManager : MonoBehaviour //아이템 구매하면 inventory로 들어감
         if (GameManager.instance.currentGold < price)
         {
             if (LogManager.Instance != null)
-                LogManager.Instance.AddActivityLog("<color=red>[구매실패]</color> 골드가 부족합니다!");
+                LogManager.Instance.AddActivityLog("<color=red>[구매실패]</color> 골드 부족");
             return;
         }
 
@@ -49,7 +49,7 @@ public class ShopManager : MonoBehaviour //아이템 구매하면 inventory로 들어감
         if (LogManager.Instance != null)
         {
             LogManager.Instance.AddActivityLog(
-                $"<color=green>[구매]</color> {item.itemData.itemName}을(를) 구매했습니다!"
+                $"<color=green>[구매]</color> {item.itemData.itemName} 구매"
             );
         }
 

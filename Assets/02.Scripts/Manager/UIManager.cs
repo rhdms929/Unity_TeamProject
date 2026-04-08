@@ -78,8 +78,7 @@ public class UIManager : MonoBehaviour
 			bool isActive = !statPanel.activeSelf;
 			statPanel.SetActive(isActive);
 
-			// 스탯 창도 열 때 게임을 멈추도록 설정 ( 일단 해둠 )
-			Time.timeScale = isActive ? 0f : 1f;
+			Time.timeScale = 1f;
 		}
 	}
 	public void CloseStatMenu() // 스탯 창 닫는 버튼

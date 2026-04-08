@@ -143,7 +143,7 @@ MonoBehaviour:
   mpPotionData: {fileID: 11400000, guid: a10c03b1e04b07444a897f6145eb7999, type: 2}
   potionDropChance: 20
   expReward: 10
-  monsterName: "\uB208\uB561\uC774"
+  monsterName: "\uD50C\uB77C\uC789 \uC544\uC774"
   alertIcon: {fileID: 6491562238026562523}
   damageTextPrefab: {fileID: 4879350082499059422, guid: 97237eb8cf5f7ee45b780a6eb75a0357, type: 3}
   damageTextOffset: {x: 0, y: 1.2, z: 0}
