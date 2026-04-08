@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf047cc385fd6bd4295e0742d03ca6ab, type: 3}
+  m_Name: SmallMPPotion_Lv2
+  m_EditorClassIdentifier: 
+  itemName: "\uC791\uC740 \uB9C8\uB098 \uD3EC\uC158 Lv2"
+  itemDescription: "\uB9C8\uB098\uB97C 30 \uD68C\uBCF5\uD569\uB2C8\uB2E4."
+  icon: {fileID: 21300000, guid: 36170074993a8d94da238b950643a277, type: 3}
+  itemLevel: 2
+  itemCategory: 0
+  isStackable: 1
+  buyPrice: 15
+  canCombine: 1
+  combineNeedCount: 3
+  nextItemData: {fileID: 11400000, guid: af1c5f3cdfa40ff40a31fba6133edad9, type: 2}
+  consumableEffectType: 2
+  effectValue: 30
+  canAssignToActionBar: 1
+  equipmentSlotType: 0
+  bonusAttack: 0
+  bonusDefense: 0
+  bonusHp: 0
+  bonusMp: 0

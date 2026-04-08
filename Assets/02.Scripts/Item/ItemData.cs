@@ -51,5 +51,8 @@ public enum EquipmentSlotType
 {
     None,
     Head,
-    Tabard
+    Chest,
+    Pant,
+    Boot,
+    Ring
 }
