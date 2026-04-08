@@ -31,15 +31,24 @@ public class ItemTooltip : MonoBehaviour
         {
             string text = data.itemDescription;
 
-            if (data.itemType == ItemData.ItemType.HP_Potion ||
-                data.itemType == ItemData.ItemType.HP_Potion_Big)
+            if (data.itemCategory == ItemCategory.Consumable)
             {
-                text += "\n\n+ " + data.healAmount.ToString("F0") + " HP";
+                if (data.consumableEffectType == ConsumableEffectType.HealHP)
+                {
+                    text += "\n\n+ " + data.effectValue.ToString("F0") + " HP";
+                }
+                else if (data.consumableEffectType == ConsumableEffectType.HealMP)
+                {
+                    text += "\n\n+ " + data.effectValue.ToString("F0") + " MP";
+                }
             }
-            else if (data.itemType == ItemData.ItemType.MP_Potion ||
-                     data.itemType == ItemData.ItemType.MP_Potion_Big)
+            else if (data.itemCategory == ItemCategory.Equipment)
             {
-                text += "\n\n+ " + data.healAmount.ToString("F0") + " MP";
+                text += "\n\n[장비 정보]";
+                text += "\n공격력 +" + data.bonusAttack;
+                text += "\n방어력 +" + data.bonusDefense;
+                text += "\n최대 HP +" + data.bonusHp;
+                text += "\n최대 MP +" + data.bonusMp;
             }
 
             descriptionText.text = text;

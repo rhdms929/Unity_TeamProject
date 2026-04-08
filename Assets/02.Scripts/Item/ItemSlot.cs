@@ -93,8 +93,6 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         if (currentEntry == null || currentEntry.itemData == null) return;
 
-        if (!IsPotion(currentEntry.itemData)) return;
-
         if (DraggedItemHolder.Instance != null)
         {
             DraggedItemHolder.Instance.StartDrag(currentEntry);
@@ -107,15 +105,5 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
     public void OnEndDrag(PointerEventData eventData)
     {
-    }
-
-    private bool IsPotion(ItemData data)
-    {
-        if (data == null) return false;
-
-        return data.itemType == ItemData.ItemType.HP_Potion ||
-               data.itemType == ItemData.ItemType.MP_Potion ||
-               data.itemType == ItemData.ItemType.HP_Potion_Big ||
-               data.itemType == ItemData.ItemType.MP_Potion_Big;
     }
 }

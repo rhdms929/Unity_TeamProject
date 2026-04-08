@@ -35,11 +35,10 @@ public class ActionBarSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
 
         InventoryEntry draggedEntry = DraggedItemHolder.Instance.DraggingEntry;
         if (draggedEntry == null || draggedEntry.itemData == null) return;
-        if (!IsPotion(draggedEntry.itemData)) return;
+        if (!ItemHelper.CanAssignToActionBar(draggedEntry.itemData)) return;
 
         ItemData draggedItem = draggedEntry.itemData;
 
-        // 같은 아이템이 이미 다른 슬롯에 있으면 그 슬롯 비우기
         ActionBarSlot[] allSlots = FindObjectsOfType<ActionBarSlot>(true);
         foreach (ActionBarSlot slot in allSlots)
         {
@@ -81,7 +80,7 @@ public class ActionBarSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
 
             if (LogManager.Instance != null)
             {
-                LogManager.Instance.AddActivityLog("<color=red>[사용 실패]</color> 등록된 포션이 없습니다.");
+                LogManager.Instance.AddActivityLog("<color=red>[사용 실패]</color> 등록된 아이템이 없습니다.");
             }
 
             return;
@@ -90,21 +89,19 @@ public class ActionBarSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
         bool removed = InventoryManager.Instance.RemoveItem(useItem, 1);
         if (!removed) return;
 
-        if (useItem.itemType == ItemData.ItemType.HP_Potion ||
-            useItem.itemType == ItemData.ItemType.HP_Potion_Big)
+        if (useItem.consumableEffectType == ConsumableEffectType.HealHP)
         {
-            playerStats.HealHP(useItem.healAmount);
+            playerStats.HealHP(useItem.effectValue);
         }
-        else if (useItem.itemType == ItemData.ItemType.MP_Potion ||
-                 useItem.itemType == ItemData.ItemType.MP_Potion_Big)
+        else if (useItem.consumableEffectType == ConsumableEffectType.HealMP)
         {
-            playerStats.HealMP(useItem.healAmount);
+            playerStats.HealMP(useItem.effectValue);
         }
 
         if (LogManager.Instance != null)
         {
             LogManager.Instance.AddActivityLog(
-                $"<color=green>[사용]</color>{useItem.itemName} 1개 사용"
+                $"<color=green>[사용]</color> {useItem.itemName} 1개 사용"
             );
         }
 
@@ -121,7 +118,6 @@ public class ActionBarSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
 
     public void RefreshUI()
     {
-        // 등록된 아이템은 있는데 인벤토리에 0개면 자동 해제
         if (assignedItem != null && InventoryManager.Instance != null)
         {
             int currentCount = InventoryManager.Instance.GetItemCount(assignedItem);
@@ -189,15 +185,5 @@ public class ActionBarSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
 
         if (countText != null)
             countText.text = "";
-    }
-
-    private bool IsPotion(ItemData data)
-    {
-        if (data == null) return false;
-
-        return data.itemType == ItemData.ItemType.HP_Potion ||
-               data.itemType == ItemData.ItemType.MP_Potion ||
-               data.itemType == ItemData.ItemType.HP_Potion_Big ||
-               data.itemType == ItemData.ItemType.MP_Potion_Big;
     }
 }

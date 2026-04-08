@@ -16,9 +16,17 @@ MonoBehaviour:
   itemDescription: "\uCCB4\uB825\uC744 15 \uD68C\uBCF5\uD569\uB2C8\uB2E4."
   icon: {fileID: 21300000, guid: c09dd93d1c8c27148b4cad97d25a9a44, type: 3}
   itemLevel: 1
+  itemCategory: 0
+  isStackable: 1
   buyPrice: 1
-  healAmount: 15
-  itemType: 0
   canCombine: 1
   combineNeedCount: 3
   nextItemData: {fileID: 11400000, guid: 8e2a86ef996c5de4fb8598ec72514bdc, type: 2}
+  consumableEffectType: 1
+  effectValue: 15
+  canAssignToActionBar: 1
+  equipmentSlotType: 0
+  bonusAttack: 0
+  bonusDefense: 0
+  bonusHp: 0
+  bonusMp: 0

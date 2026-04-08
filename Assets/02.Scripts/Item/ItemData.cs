@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 [CreateAssetMenu(fileName = "NewItemData", menuName = "Item/ItemData")]
 public class ItemData : ScriptableObject
 {
@@ -9,28 +8,48 @@ public class ItemData : ScriptableObject
     public string itemName;
     [TextArea] public string itemDescription;
     public Sprite icon;
-
-    [Header("레벨 정보")]
     public int itemLevel = 1;
 
-    [Header("상점 정보")]
+    [Header("공통 분류")]
+    public ItemCategory itemCategory;
+    public bool isStackable = true;
+
+    [Header("상점 / 합성 공통")]
     public int buyPrice = 10;
-
-    [Header("포션 정보")]
-    public float healAmount = 50f;
-
-    public enum ItemType
-    {
-        HP_Potion,
-        MP_Potion,
-        HP_Potion_Big,
-        MP_Potion_Big
-    }
-
-    public ItemType itemType;
-
-    [Header("합성 정보")]
-    public bool canCombine = true;
+    public bool canCombine = false;
     public int combineNeedCount = 3;
     public ItemData nextItemData;
+
+    [Header("소비 아이템 정보")]
+    public ConsumableEffectType consumableEffectType = ConsumableEffectType.None;
+    public float effectValue = 0f;
+    public bool canAssignToActionBar = false;
+
+    [Header("장비 아이템 정보")]
+    public EquipmentSlotType equipmentSlotType = EquipmentSlotType.None;
+    public int bonusAttack = 0;
+    public int bonusDefense = 0;
+    public int bonusHp = 0;
+    public int bonusMp = 0;
+}
+
+public enum ItemCategory
+{
+    Consumable,
+    Equipment,
+    Material
+}
+
+public enum ConsumableEffectType
+{
+    None,
+    HealHP,
+    HealMP
+}
+
+public enum EquipmentSlotType
+{
+    None,
+    Head,
+    Tabard
 }
