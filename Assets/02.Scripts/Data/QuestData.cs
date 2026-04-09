@@ -12,7 +12,8 @@ public class QuestData
 	public string questDescription; 
 	public QuestType questType;
 	public int targetCount;      
-	public string targetMonsterName; 
+	public string targetMonsterName;
+	public string targetItemName;
 	public int zoneNumber;          
 
 	[Header("진행 데이터")]

@@ -42,7 +42,15 @@ public class InventoryManager : MonoBehaviour //아이템 획득은 전부 이 코드로 들�
 			);
         }
 
-        RefreshUI();
+		if (QuestManager.Instance != null)
+		{
+
+			for (int i = 0; i < amount; i++)
+			{
+				QuestManager.Instance.OnItemGained(data.itemName);
+			}
+		}
+		RefreshUI();
     }
 
     public bool RemoveItem(ItemData data, int amount = 1)

@@ -69,13 +69,17 @@ public class QuestManager : MonoBehaviour
 		UpdateAllQuestUI();
 	}
 	// 아이템 획득 시 호출 - Item 타입 퀘스트 카운트 갱신
-	public void OnItemGained()
+	public void OnItemGained(string itemName)
 	{
 		foreach (QuestData quest in questList)
 		{
 			if (quest.zoneNumber != currentZone) continue;
 			if (quest.isCompleted) continue;
 			if (quest.questType != QuestType.Item) continue;
+
+			// 중요: 지금 먹은 아이템 이름(itemName)에 목표 이름(targetItemName)이 포함되어 있는지 확인!
+			if (!string.IsNullOrEmpty(quest.targetItemName) && !itemName.Contains(quest.targetItemName))
+				continue;
 
 			quest.currentCount++;
 
@@ -132,38 +136,12 @@ public class QuestManager : MonoBehaviour
 		if (detailDescText != null) detailDescText.text = desc;
 	}
 
-	// 완료 버튼 클릭 시 선택된 퀘스트 완료 처리
-	public void OnClickCompleteButton()
-	{
-		if (selectedQuest == null || selectedQuest.isCompleted) return;
-
-		CompleteQuest(selectedQuest);
-		UpdateAllQuestUI();
-	}
 
 	void CompleteQuest(QuestData quest)
 	{
 		quest.isCompleted = true;
 		LogManager.Instance.AddActivityLog($"<color=green>[퀘스트 완료]</color> {quest.questTitle}");
 		UpdateAllQuestUI();
-		CheckZoneProgress();
 	}
 	
-	// 현재 구역의 모든 퀘스트 완료 시 다음 구역으로 이동
-	void CheckZoneProgress()
-	{
-		foreach (var q in questList)
-		{
-			if (q.zoneNumber == currentZone && !q.isCompleted)
-				return;
-		}
-		Invoke("GoToNextZone", 2f);
-	}
-
-	void GoToNextZone()
-	{
-		currentZone++;
-		LogManager.Instance.AddActivityLog($"[구역 해금] {currentZone}구역 임무 시작!");
-		RefreshQuestUI();
-	}
 }
