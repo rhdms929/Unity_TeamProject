@@ -25,7 +25,7 @@ MonoBehaviour:
   consumableEffectType: 0
   effectValue: 0
   canAssignToActionBar: 0
-  equipmentSlotType: 1
+  equipmentSlotType: 2
   bonusAttack: 0
   bonusDefense: 200
   bonusHp: 0
