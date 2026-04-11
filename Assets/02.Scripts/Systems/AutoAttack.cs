@@ -11,8 +11,10 @@ public class AutoAttack : MonoBehaviour
 	public float moveSpeed = 4f;        // 추격 속도
 	public float attackDelay = 1f;
 	public int damage = 10;
+
 	[Header("Mana Settings")]
 	public float attackManaCost = 2f; // 공격 한 번당 소모할 마나량
+
 	private float timer = 0f;
 	private Animator anim;
 	private SpriteRenderer sr;
@@ -23,7 +25,11 @@ public class AutoAttack : MonoBehaviour
 	int pathIndex = 0;
 	float pathUpdateTimer = 0f;
 	public float pathUpdateDelay = 0.5f; // 경로 재계산 주기
-	void Start()
+
+	private Transform currentTarget;
+	private float targetUpdateTimer = 0f;
+	public float targetUpdateDelay = 0.5f;
+	void Awake()
 	{
 		anim = GetComponent<Animator>();
 		sr = GetComponent<SpriteRenderer>();
@@ -35,25 +41,21 @@ public class AutoAttack : MonoBehaviour
 	void Update()
 	{
 		if (!isAutoMode) return;
-		Transform target = GetNearestEnemy();
-		// 현재 타겟이 없거나, 타겟이 죽었거나(비활성화), 너무 멀어졌을 때만 새로 찾기
-		if (target == null || !target.gameObject.activeInHierarchy || Vector2.Distance(transform.position, target.position) > detectRange)
+
+		targetUpdateTimer += Time.deltaTime;
+		if (targetUpdateTimer >= targetUpdateDelay)
 		{
-			target = GetNearestEnemy();
+			currentTarget = GetNearestEnemy();
+			targetUpdateTimer = 0f;
 		}
-		if (target != null)
+
+		if (currentTarget != null && currentTarget.gameObject.activeInHierarchy)
 		{
-			float distance = Vector2.Distance(transform.position, target.position);
+			float distance = Vector2.Distance(transform.position, currentTarget.position);
 			if (distance > attackRange)
-			{
-				// 추격
-				ChaseEnemy(target);
-			}
+				ChaseEnemy(currentTarget);
 			else
-			{
-				// 공격
-				StopAndAttack(target);
-			}
+				StopAndAttack(currentTarget);
 		}
 		else
 		{

@@ -8,12 +8,17 @@ public class InventoryManager : MonoBehaviour //아이템 획득은 전부 이 코드로 들�
     [Header("Inventory Data")]
     public List<InventoryEntry> items = new List<InventoryEntry>();
 
-    private void Awake()
+	private InventoryUI inventoryUI;
+	private ActionBarSlot[] actionSlots;
+
+	private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-        }
+			inventoryUI = FindObjectOfType<InventoryUI>();
+			actionSlots = FindObjectsOfType<ActionBarSlot>(true);
+		}
         else
         {
             Destroy(gameObject);
@@ -77,17 +82,18 @@ public class InventoryManager : MonoBehaviour //아이템 획득은 전부 이 코드로 들�
         return entry != null ? entry.count : 0;
     }
 
-    public void RefreshUI()
-    {
-        InventoryUI ui = FindObjectOfType<InventoryUI>();
-        if (ui != null)
-            ui.RefreshInventoryUI();
+	public void RefreshUI()
+	{
+		if (inventoryUI != null)
+			inventoryUI.RefreshInventoryUI();
 
-        ActionBarSlot[] actionSlots = FindObjectsOfType<ActionBarSlot>(true);
-        foreach (ActionBarSlot slot in actionSlots)
-        {
-            if (slot != null)
-                slot.RefreshUI();
-        }
-    }
+		if (actionSlots != null)
+		{
+			foreach (ActionBarSlot slot in actionSlots)
+			{
+				if (slot != null)
+					slot.RefreshUI();
+			}
+		}
+	}
 }

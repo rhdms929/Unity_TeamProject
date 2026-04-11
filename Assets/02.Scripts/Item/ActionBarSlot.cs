@@ -120,58 +120,33 @@ public class ActionBarSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
     {
         if (assignedItem != null && InventoryManager.Instance != null)
         {
-            int currentCount = InventoryManager.Instance.GetItemCount(assignedItem);
-            if (currentCount <= 0)
-            {
-                assignedItem = null;
-            }
-        }
+			int count = InventoryManager.Instance.GetItemCount(assignedItem);
 
-        if (assignedItem == null)
-        {
-            if (iconImage != null)
-            {
-                iconImage.sprite = null;
-                iconImage.enabled = false;
-            }
+			if (count <= 0)
+			{
+				assignedItem = null;
+			}
+			else
+			{
+				if (iconImage != null)
+				{
+					iconImage.sprite = assignedItem.icon;
+					iconImage.enabled = true;
+				}
+				if (countText != null)
+					countText.text = count.ToString();
+				return;
+			}
+		}
 
-            if (countText != null)
-                countText.text = "";
-
-            return;
-        }
-
-        if (iconImage != null)
-        {
-            iconImage.sprite = assignedItem.icon;
-            iconImage.enabled = true;
-        }
-
-        if (countText != null)
-        {
-            int count = 0;
-
-            if (InventoryManager.Instance != null)
-                count = InventoryManager.Instance.GetItemCount(assignedItem);
-
-            if (count <= 0)
-            {
-                assignedItem = null;
-
-                if (iconImage != null)
-                {
-                    iconImage.sprite = null;
-                    iconImage.enabled = false;
-                }
-
-                countText.text = "";
-            }
-            else
-            {
-                countText.text = count.ToString();
-            }
-        }
-    }
+		if (iconImage != null)
+		{
+			iconImage.sprite = null;
+			iconImage.enabled = false;
+		}
+		if (countText != null)
+			countText.text = "";
+	}
 
     public void ClearAssignedItem()
     {

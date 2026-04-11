@@ -38,7 +38,6 @@ public class Enemy : PoolAble, IDamageable
 	private int currentHP;
 	private bool isDead;
     private bool hasDetectedPlayer; //플레이어를 감지했는지
-   // private Coroutine alertCoroutine; //alert코루틴 함수
     private Coroutine returnCoroutine;  //	풀링 쓰면서 코루틴 함수
 
     [Header("Reward")] //경험치 보상
@@ -49,7 +48,6 @@ public class Enemy : PoolAble, IDamageable
 
     [Header("Alert")]
     public GameObject alertIcon;   // 느낌표 오브젝트
-                                   //public float alertShowTime = 0.6f; // 표시 시간
 
     [Header("Damage Text")] //적 위에 데미지 수치 보이게 하기
     public GameObject damageTextPrefab;
@@ -175,8 +173,6 @@ public class Enemy : PoolAble, IDamageable
 
 		Vector3 targetWayPoint = path[targetIndex].worldPos;
 		// 적의 현재 위치에서 목표 노드를 향한 방향 계산
-
-		Vector2 direction = ((Vector2)targetWayPoint - (Vector2)transform.position).normalized;
 
 		// 플레이어 방향을 바라보도록 flipX 설정 (노드 방향이 아니라 실제 플레이어 방향 기준)
 		Vector2 dirToPlayer = (target.position - transform.position).normalized;
@@ -304,13 +300,6 @@ public class Enemy : PoolAble, IDamageable
         if (selectedPotion == null) return;
 
         InventoryManager.Instance.AddItem(selectedPotion, 1);
-
-       // if (LogManager.Instance != null)
-       // {
-       //     LogManager.Instance.AddLootLog(
-       //         $"{monsterName}이(가) {selectedPotion.itemName}을(를) 떨어뜨렸습니다."
-       //     );
-       // }
     }
 
     // 적 범위 시각화입니당

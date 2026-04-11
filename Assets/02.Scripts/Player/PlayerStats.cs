@@ -127,20 +127,6 @@ public class PlayerStats : MonoBehaviour, IDamageable
         RegenerateHP();
         UpdateHpMpUI();
 
-        //   float targetHpRatio = (float)currentHp / maxHp;
-        //	float targetMpRatio = currentMp / maxMp;
-        //
-        //	// HP 바 
-        //	if (topHpFill != null) topHpFill.fillAmount = Mathf.Lerp(topHpFill.fillAmount, targetHpRatio, Time.deltaTime * 5f);
-        //	if (bottomHpFill != null) bottomHpFill.fillAmount = Mathf.Lerp(bottomHpFill.fillAmount, targetHpRatio, Time.deltaTime * 5f);
-        //
-        //	// MP 바 
-        //	if (topMpFill != null) topMpFill.fillAmount = Mathf.Lerp(topMpFill.fillAmount, targetMpRatio, Time.deltaTime * 5f);
-        //	if (bottomMpFill != null) bottomMpFill.fillAmount = Mathf.Lerp(bottomMpFill.fillAmount, targetMpRatio, Time.deltaTime * 5f);
-        //
-        //	// 텍스트는 즉시 업데이트
-        //	if (hpText != null) hpText.text = $"{currentHp} / {maxHp}";
-        //	if (mpText != null) mpText.text = $"{(int)currentMp} / {(int)maxMp}";
     }
 
     //power

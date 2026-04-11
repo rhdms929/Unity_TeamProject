@@ -55,8 +55,6 @@ public class ZoneSpawner : MonoBehaviour //각 Zone 안에서 몬스터 스폰, zone이 해
 
 		if (enemy != null)
 			enemy.transform.position = spawnPos;
-		else
-			Instantiate(prefab, spawnPos, Quaternion.identity);
 	}
 
     Vector2 GetRandomPointInCollider()
