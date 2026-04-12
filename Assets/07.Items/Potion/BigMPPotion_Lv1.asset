@@ -22,9 +22,9 @@ MonoBehaviour:
   canCombine: 0
   combineNeedCount: 3
   nextItemData: {fileID: 11400000, guid: af1c5f3cdfa40ff40a31fba6133edad9, type: 2}
-  consumableEffectType: 2
+  potionType: 2
   effectValue: 100
-  canAssignToActionBar: 1
+  canBottomBar: 1
   equipmentSlotType: 0
   bonusAttack: 0
   bonusDefense: 0

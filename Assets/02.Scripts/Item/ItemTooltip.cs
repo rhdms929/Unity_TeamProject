@@ -31,13 +31,13 @@ public class ItemTooltip : MonoBehaviour
         {
             string text = data.itemDescription;
 
-            if (data.itemCategory == ItemCategory.Consumable)
+            if (data.itemCategory == ItemCategory.Potion)
             {
-                if (data.consumableEffectType == ConsumableEffectType.HealHP)
+                if (data.potionType == PotionType.HealHP)
                 {
                     text += "\n\n+ " + data.effectValue.ToString("F0") + " HP";
                 }
-                else if (data.consumableEffectType == ConsumableEffectType.HealMP)
+                else if (data.potionType == PotionType.HealMP)
                 {
                     text += "\n\n+ " + data.effectValue.ToString("F0") + " MP";
                 }

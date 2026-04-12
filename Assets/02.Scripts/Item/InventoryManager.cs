@@ -8,23 +8,20 @@ public class InventoryManager : MonoBehaviour //æ∆¿Ã≈€ »πµÊ¿∫ ¿¸∫Œ ¿Ã ƒ⁄µÂ∑Œ µÈæ
     [Header("Inventory Data")]
     public List<InventoryEntry> items = new List<InventoryEntry>();
 
-	private InventoryUI inventoryUI;
-	private ActionBarSlot[] actionSlots;
+    private InventoryUI inventoryUI;
+    private ActionBarSlot[] actionSlots;
 
-	private void Awake()
+    private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-			inventoryUI = FindObjectOfType<InventoryUI>();
-			actionSlots = FindObjectsOfType<ActionBarSlot>(true);
-		}
+        }
         else
         {
             Destroy(gameObject);
         }
     }
-
     public void AddItem(ItemData data, int amount = 1, bool showLog = true)
     {
         if (data == null) return;
@@ -42,20 +39,18 @@ public class InventoryManager : MonoBehaviour //æ∆¿Ã≈€ »πµÊ¿∫ ¿¸∫Œ ¿Ã ƒ⁄µÂ∑Œ µÈæ
 
         if (showLog && LogManager.Instance != null)
         {
-            LogManager.Instance.AddLootLog(
-				$"{data.itemName} {amount}∞≥ »πµÊ"
-			);
+            LogManager.Instance.AddLootLog($"{data.itemName} {amount}∞≥ »πµÊ");
         }
 
-		if (QuestManager.Instance != null)
-		{
+        if (QuestManager.Instance != null)
+        {
 
-			for (int i = 0; i < amount; i++)
-			{
-				QuestManager.Instance.OnItemGained(data.itemName);
-			}
-		}
-		RefreshUI();
+            for (int i = 0; i < amount; i++)
+            {
+                QuestManager.Instance.OnItemGained(data.itemName);
+            }
+        }
+        RefreshUI();
     }
 
     public bool RemoveItem(ItemData data, int amount = 1)
@@ -82,18 +77,16 @@ public class InventoryManager : MonoBehaviour //æ∆¿Ã≈€ »πµÊ¿∫ ¿¸∫Œ ¿Ã ƒ⁄µÂ∑Œ µÈæ
         return entry != null ? entry.count : 0;
     }
 
-	public void RefreshUI()
-	{
-		if (inventoryUI != null)
-			inventoryUI.RefreshInventoryUI();
-
-		if (actionSlots != null)
-		{
-			foreach (ActionBarSlot slot in actionSlots)
-			{
-				if (slot != null)
-					slot.RefreshUI();
-			}
-		}
-	}
+    public void RefreshUI()
+    {
+        InventoryUI ui = FindObjectOfType<InventoryUI>();
+        if (ui != null)
+            ui.RefreshInventoryUI();
+        ActionBarSlot[] actionSlots = FindObjectsOfType<ActionBarSlot>(true);
+        foreach (ActionBarSlot slot in actionSlots)
+        {
+            if (slot != null)
+                slot.RefreshUI();
+        }
+    }
 }

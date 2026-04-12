@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// 드래그 중인 아이템 정보를 임시로 보관하는 싱글톤
 public class DraggedItemHolder : MonoBehaviour
 {
     public static DraggedItemHolder Instance;
-
     public InventoryEntry DraggingEntry { get; private set; }
 
+    //드래그 중
     public bool IsDragging
     {
         get { return DraggingEntry != null; }
@@ -25,19 +26,15 @@ public class DraggedItemHolder : MonoBehaviour
         }
     }
 
+    // 드래그 시작
     public void StartDrag(InventoryEntry entry)
     {
         DraggingEntry = entry;
-
-        if (entry != null && entry.itemData != null)
-            Debug.Log("드래그 시작: " + entry.itemData.itemName);
-        else
-            Debug.Log("드래그 시작 실패: entry 없음");
     }
 
+    // 드롭 완료
     public void EndDrag()
     {
-        Debug.Log("드래그 데이터 비움");
         DraggingEntry = null;
     }
 }

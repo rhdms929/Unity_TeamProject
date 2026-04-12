@@ -16,13 +16,16 @@ public class ShopManager : MonoBehaviour //아이템 구매하면 inventory로 들어감
     public void SelectItem(ShopItem item)
     {
         if (previousItem != null && previousItem != item)
+        {
             previousItem.buyButton.SetActive(false);
-
+        }
         selectedItem = item;
         previousItem = item;
 
         if (item.buyButton != null)
+        {
             item.buyButton.SetActive(true);
+        }
     }
 
     public void BuyItem(ShopItem item)
@@ -35,7 +38,9 @@ public class ShopManager : MonoBehaviour //아이템 구매하면 inventory로 들어감
         if (GameManager.instance.currentGold < price)
         {
             if (LogManager.Instance != null)
+            {
                 LogManager.Instance.AddActivityLog("<color=red>[구매실패]</color> 골드 부족");
+            }
             return;
         }
 
@@ -48,9 +53,7 @@ public class ShopManager : MonoBehaviour //아이템 구매하면 inventory로 들어감
 
         if (LogManager.Instance != null)
         {
-            LogManager.Instance.AddActivityLog(
-                $"<color=green>[구매]</color> {item.itemData.itemName} 구매"
-            );
+            LogManager.Instance.AddActivityLog($"<color=green>[구매]</color> {item.itemData.itemName} 구매");
         }
 
         item.buyButton.SetActive(false);
@@ -58,6 +61,8 @@ public class ShopManager : MonoBehaviour //아이템 구매하면 inventory로 들어감
 
         InventoryUI invUI = FindObjectOfType<InventoryUI>();
         if (invUI != null)
+        {
             invUI.RefreshMyGold();
+        }
     }
 }

@@ -25,7 +25,6 @@ public class ActionBarSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
     {
         RefreshUI();
     }
-
     public void OnDrop(PointerEventData eventData)
     {
         Debug.Log("ActionBarSlot OnDrop");
@@ -35,7 +34,7 @@ public class ActionBarSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
 
         InventoryEntry draggedEntry = DraggedItemHolder.Instance.DraggingEntry;
         if (draggedEntry == null || draggedEntry.itemData == null) return;
-        if (!ItemHelper.CanAssignToActionBar(draggedEntry.itemData)) return;
+        if (!ItemHelper.CanBottomBar(draggedEntry.itemData)) return;
 
         ItemData draggedItem = draggedEntry.itemData;
 
@@ -89,20 +88,18 @@ public class ActionBarSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
         bool removed = InventoryManager.Instance.RemoveItem(useItem, 1);
         if (!removed) return;
 
-        if (useItem.consumableEffectType == ConsumableEffectType.HealHP)
+        if (useItem.potionType == PotionType.HealHP)
         {
             playerStats.HealHP(useItem.effectValue);
         }
-        else if (useItem.consumableEffectType == ConsumableEffectType.HealMP)
+        else if (useItem.potionType == PotionType.HealMP)
         {
             playerStats.HealMP(useItem.effectValue);
         }
 
         if (LogManager.Instance != null)
         {
-            LogManager.Instance.AddActivityLog(
-                $"<color=green>[사용]</color> {useItem.itemName} 1개 사용"
-            );
+            LogManager.Instance.AddActivityLog($"<color=green>[사용]</color> {useItem.itemName} 1개 사용");
         }
 
         int remainCount = InventoryManager.Instance.GetItemCount(useItem);

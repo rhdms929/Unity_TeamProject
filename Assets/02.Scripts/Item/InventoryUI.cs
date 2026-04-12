@@ -89,7 +89,6 @@ public class InventoryUI : MonoBehaviour //골드 표시, bag슬롯들 갱신 기능
 
         RefreshCombineButton();
     }
-
     public void ClearSelectedItemInfo()
     {
         selectedEntry = null;
@@ -114,7 +113,6 @@ public class InventoryUI : MonoBehaviour //골드 표시, bag슬롯들 갱신 기능
 
         RefreshCombineButton();
     }
-
     public InventoryEntry GetSelectedEntry()
     {
         return selectedEntry;
@@ -155,7 +153,6 @@ public class InventoryUI : MonoBehaviour //골드 표시, bag슬롯들 갱신 기능
             RefreshCombineButton();
         }
     }
-
     public void OnClickCombineButton()
     {
         if (selectedEntry == null || selectedEntry.itemData == null)
@@ -232,8 +229,7 @@ public class InventoryUI : MonoBehaviour //골드 표시, bag슬롯들 갱신 기능
         {
             if (selectedEntry != null && selectedEntry.itemData != null)
             {
-                combineButtonText.text =
-                    "합성 (" + selectedEntry.count + "/" + selectedEntry.itemData.combineNeedCount + ")";
+                combineButtonText.text = "합성 (" + selectedEntry.count + "/" + selectedEntry.itemData.combineNeedCount + ")";
             }
             else
             {
