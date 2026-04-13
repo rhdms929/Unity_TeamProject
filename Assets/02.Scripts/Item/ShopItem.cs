@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+//상점에 표시되는 아이템 스크립트
 public class ShopItem : MonoBehaviour //아이템 정보
 {
 	[Header("아이템 정보")]
@@ -23,7 +24,6 @@ public class ShopItem : MonoBehaviour //아이템 정보
             if (priceText != null)
                 priceText.text = itemData.buyPrice.ToString();
         }
-
         if (buyButton != null)
             buyButton.SetActive(false);
     }

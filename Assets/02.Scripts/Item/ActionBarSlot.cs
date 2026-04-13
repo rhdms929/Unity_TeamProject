@@ -51,7 +51,6 @@ public class ActionBarSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
                 Debug.Log("중복 슬롯 비우기: " + draggedItem.itemName);
             }
         }
-
         assignedItem = draggedItem;
         Debug.Log("등록 완료: " + assignedItem.itemName);
 
@@ -81,7 +80,6 @@ public class ActionBarSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
             {
                 LogManager.Instance.AddActivityLog("<color=red>[사용 실패]</color> 등록된 아이템이 없습니다.");
             }
-
             return;
         }
 

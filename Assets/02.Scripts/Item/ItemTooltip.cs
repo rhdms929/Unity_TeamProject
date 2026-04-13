@@ -15,7 +15,6 @@ public class ItemTooltip : MonoBehaviour
         instance = this;
         Clear();
     }
-
     public void Show(ItemData data)
     {
         if (data == null)
@@ -23,7 +22,6 @@ public class ItemTooltip : MonoBehaviour
             Clear();
             return;
         }
-
         if (titleText != null)
             titleText.text = data.itemName;
 
@@ -44,13 +42,11 @@ public class ItemTooltip : MonoBehaviour
             }
             else if (data.itemCategory == ItemCategory.Equipment)
             {
-                //text += "\n[장비 정보]";
                 text += "\n\n공격력 +" + data.bonusAttack;
                 text += "\n방어력 +" + data.bonusDefense;
                 text += "\n최대 HP +" + data.bonusHp;
                 text += "\n최대 MP +" + data.bonusMp;
             }
-
             descriptionText.text = text;
         }
     }

@@ -7,26 +7,25 @@ public class InventoryManager : MonoBehaviour //æ∆¿Ã≈€ »πµÊ¿∫ ¿¸∫Œ ¿Ã ƒ⁄µÂ∑Œ µÈæ
 
     [Header("Inventory Data")]
     public List<InventoryEntry> items = new List<InventoryEntry>();
-
-    private InventoryUI inventoryUI;
-    private ActionBarSlot[] actionSlots;
-
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
+            return;
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+
+        Destroy(gameObject);
     }
+
     public void AddItem(ItemData data, int amount = 1, bool showLog = true)
     {
-        if (data == null) return;
+        if (data == null)
+        {
+            return;
+        }
 
-        InventoryEntry entry = items.Find(x => x.itemData == data);
+        InventoryEntry entry = FindEntry(data);
 
         if (entry != null)
         {
@@ -36,36 +35,36 @@ public class InventoryManager : MonoBehaviour //æ∆¿Ã≈€ »πµÊ¿∫ ¿¸∫Œ ¿Ã ƒ⁄µÂ∑Œ µÈæ
         {
             items.Add(new InventoryEntry(data, amount));
         }
-
-        if (showLog && LogManager.Instance != null)
-        {
-            LogManager.Instance.AddLootLog($"{data.itemName} {amount}∞≥ »πµÊ");
-        }
-
-        if (QuestManager.Instance != null)
-        {
-
-            for (int i = 0; i < amount; i++)
-            {
-                QuestManager.Instance.OnItemGained(data.itemName);
-            }
-        }
+        AddLootLog(data, amount, showLog);
+        NotifyQuestItemGained(data, amount);
         RefreshUI();
     }
 
     public bool RemoveItem(ItemData data, int amount = 1)
     {
-        if (data == null) return false;
-
-        InventoryEntry entry = items.Find(x => x.itemData == data);
-
-        if (entry == null || entry.count < amount)
+        if (data == null)
+        {
             return false;
+        }
+
+        InventoryEntry entry = FindEntry(data);
+
+        if (entry == null)
+        {
+            return false;
+        }
+
+        if (entry.count < amount)
+        {
+            return false;
+        }
 
         entry.count -= amount;
 
         if (entry.count <= 0)
+        {
             items.Remove(entry);
+        }
 
         RefreshUI();
         return true;
@@ -73,20 +72,72 @@ public class InventoryManager : MonoBehaviour //æ∆¿Ã≈€ »πµÊ¿∫ ¿¸∫Œ ¿Ã ƒ⁄µÂ∑Œ µÈæ
 
     public int GetItemCount(ItemData data)
     {
-        InventoryEntry entry = items.Find(x => x.itemData == data);
-        return entry != null ? entry.count : 0;
+        InventoryEntry entry = FindEntry(data);
+
+        if (entry == null)
+        {
+            return 0;
+        }
+
+        return entry.count;
     }
 
     public void RefreshUI()
     {
+        RefreshInventoryWindow();
+        RefreshActionBarSlots();
+    }
+
+    private InventoryEntry FindEntry(ItemData data)
+    {
+        return items.Find(x => x.itemData == data);
+    }
+
+    private void AddLootLog(ItemData data, int amount, bool showLog)
+    {
+        if (!showLog)
+        {
+            return;
+        }
+        if (LogManager.Instance == null)
+        {
+            return;
+        }
+        LogManager.Instance.AddLootLog($"{data.itemName} {amount}∞≥ »πµÊ");
+    }
+
+    private void NotifyQuestItemGained(ItemData data, int amount)
+    {
+        if (QuestManager.Instance == null)
+        {
+            return;
+        }
+        for (int i = 0; i < amount; i++)
+        {
+            QuestManager.Instance.OnItemGained(data.itemName);
+        }
+    }
+
+    private void RefreshInventoryWindow()
+    {
         InventoryUI ui = FindObjectOfType<InventoryUI>();
+
         if (ui != null)
+        {
             ui.RefreshInventoryUI();
-        ActionBarSlot[] actionSlots = FindObjectsOfType<ActionBarSlot>(true);
-        foreach (ActionBarSlot slot in actionSlots)
+        }
+    }
+
+    private void RefreshActionBarSlots()
+    {
+        ActionBarSlot[] slots = FindObjectsOfType<ActionBarSlot>(true);
+
+        foreach (ActionBarSlot slot in slots)
         {
             if (slot != null)
+            {
                 slot.RefreshUI();
+            }
         }
     }
 }

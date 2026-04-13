@@ -30,7 +30,10 @@ public class ShopManager : MonoBehaviour //아이템 구매하면 inventory로 들어감
 
     public void BuyItem(ShopItem item)
     {
-        if (item == null || item.itemData == null) return;
+        if (item == null) return;
+
+        if (item.itemData == null) return;
+
         if (GameManager.instance == null) return;
 
         int price = item.itemData.buyPrice;
@@ -60,6 +63,7 @@ public class ShopManager : MonoBehaviour //아이템 구매하면 inventory로 들어감
         selectedItem = null;
 
         InventoryUI invUI = FindObjectOfType<InventoryUI>();
+
         if (invUI != null)
         {
             invUI.RefreshMyGold();

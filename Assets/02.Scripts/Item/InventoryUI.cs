@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 public class InventoryUI : MonoBehaviour //골드 표시, bag슬롯들 갱신 기능
 {
-    [Header("Gold UI Elements")]
+    [Header("Gold UI")]
     [SerializeField] private TextMeshProUGUI selectedItemPriceText;
     [SerializeField] private TextMeshProUGUI myCurrentGoldText;
 
@@ -31,7 +31,6 @@ public class InventoryUI : MonoBehaviour //골드 표시, bag슬롯들 갱신 기능
         RefreshInventoryUI();
         ClearSelectedItemInfo();
     }
-
     void OnEnable()
     {
         RefreshMyGold();
@@ -42,7 +41,6 @@ public class InventoryUI : MonoBehaviour //골드 표시, bag슬롯들 갱신 기능
 
         ClearSelectedItemInfo();
     }
-
     public void RefreshMyGold()
     {
         if (GameManager.instance != null && myCurrentGoldText != null)
@@ -50,7 +48,6 @@ public class InventoryUI : MonoBehaviour //골드 표시, bag슬롯들 갱신 기능
             myCurrentGoldText.text = ((int)GameManager.instance.currentGold).ToString();
         }
     }
-
     public void OnItemSelected(int price)
     {
         if (selectedItemPriceText != null)
@@ -58,7 +55,6 @@ public class InventoryUI : MonoBehaviour //골드 표시, bag슬롯들 갱신 기능
             selectedItemPriceText.text = price.ToString();
         }
     }
-
     public void SelectInventoryItem(InventoryEntry entry)
     {
         selectedEntry = entry;

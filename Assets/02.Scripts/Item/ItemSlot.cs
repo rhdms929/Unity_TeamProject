@@ -18,20 +18,13 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         currentEntry = entry;
 
-        if (currentEntry != null && currentEntry.itemData != null)
-        {
-            if (iconImage != null)
-            {
-                iconImage.sprite = currentEntry.itemData.icon;
-                iconImage.enabled = true;
-            }
-
-            UpdateUI();
-        }
-        else
+        if (currentEntry == null || currentEntry.itemData == null)
         {
             ClearSlot();
+            return;
         }
+        RefreshIcon();
+        RefreshCountText();
     }
 
     public void ClearSlot()
@@ -46,17 +39,6 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 
         if (countText != null)
             countText.text = "";
-    }
-
-    private void UpdateUI()
-    {
-        if (countText != null)
-        {
-            if (currentEntry != null)
-                countText.text = currentEntry.count.ToString();
-            else
-                countText.text = "";
-        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -98,12 +80,31 @@ public class ItemSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
             DraggedItemHolder.Instance.StartDrag(currentEntry);
         }
     }
-
+   
     public void OnDrag(PointerEventData eventData)
     {
     }
 
     public void OnEndDrag(PointerEventData eventData)
     {
+    }
+    private void RefreshIcon()
+    {
+        if (iconImage == null) return;
+
+        iconImage.sprite = currentEntry.itemData.icon;
+        iconImage.enabled = true;
+    }
+
+    private void RefreshCountText()
+    {
+        if (countText == null) return;
+
+        if (currentEntry == null)
+        {
+            countText.text = "";
+            return;
+        }
+        countText.text = currentEntry.count.ToString();
     }
 }

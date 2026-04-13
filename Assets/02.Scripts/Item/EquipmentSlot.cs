@@ -14,7 +14,6 @@ public class EquipmentSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
 
     [Header("현재 장착 아이템")]
     [SerializeField] private ItemData equippedItem;
-
     public void OnDrop(PointerEventData eventData)
     {
         if (DraggedItemHolder.Instance == null) return;
@@ -36,7 +35,6 @@ public class EquipmentSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
     {
         Unequip();
     }
-
     private void Equip(ItemData newItem)
     {
         if (InventoryManager.Instance == null || newItem == null) return;
@@ -58,10 +56,8 @@ public class EquipmentSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
                 $"<color=green>[장착]</color> {equippedItem.itemName} 장착"
             );
         }
-
         InventoryManager.Instance.RefreshUI();
     }
-
     private void Unequip()
     {
         if (equippedItem == null) return;
@@ -75,7 +71,6 @@ public class EquipmentSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
                 $"<color=yellow>[해제]</color> {equippedItem.itemName} 해제"
             );
         }
-
         equippedItem = null;
         RefreshUI();
         InventoryManager.Instance.RefreshUI();
@@ -96,7 +91,6 @@ public class EquipmentSlot : MonoBehaviour, IDropHandler, IPointerClickHandler
             iconImage.enabled = true;
         }
     }
-
     public ItemData GetEquippedItem()
     {
         return equippedItem;
