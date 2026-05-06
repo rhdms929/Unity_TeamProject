@@ -6,14 +6,14 @@ public class AutoAttack : MonoBehaviour
 {
 	[Header("Settings")]
 	public bool isAutoMode = true;
-	public float detectRange = 10f;     // 적을 발견하는 범위
-	public float attackRange = 1.2f;    // 멈춰서 공격할 거리
-	public float moveSpeed = 4f;        // 추격 속도
+	public float detectRange = 10f;         
+	public float attackRange = 1.2f;    
+	public float moveSpeed = 4f;        
 	public float attackDelay = 1f;
 	public int damage = 10;
 
 	[Header("Mana Settings")]
-	public float attackManaCost = 2f; // 공격 한 번당 소모할 마나량
+	public float attackManaCost = 2f;                     
 
 	private float timer = 0f;
 	private Animator anim;
@@ -24,7 +24,7 @@ public class AutoAttack : MonoBehaviour
 	List<Node> currentPath;
 	int pathIndex = 0;
 	float pathUpdateTimer = 0f;
-	public float pathUpdateDelay = 0.5f; // 경로 재계산 주기
+	public float pathUpdateDelay = 0.5f; 
 
 	private Transform currentTarget;
 	private float targetUpdateTimer = 0f;
@@ -65,7 +65,7 @@ public class AutoAttack : MonoBehaviour
 	void ChaseEnemy(Transform target)
 	{
 		pathUpdateTimer += Time.deltaTime;
-		// 일정 시간마다 경로 다시 계산
+ 
 		if (pathUpdateTimer >= pathUpdateDelay)
 		{
 			currentPath = pathfinding.FindPath(transform.position, target.position);
@@ -76,7 +76,7 @@ public class AutoAttack : MonoBehaviour
 		Vector3 targetPos = currentPath[pathIndex].worldPos;
 		Vector2 direction = (targetPos - transform.position).normalized;
 		transform.position += (Vector3)direction * moveSpeed * Time.deltaTime;
-		// 노드에 도착하면 다음 노드로 이동
+
 		if (Vector2.Distance(transform.position, targetPos) < 0.2f)
 		{
 			pathIndex++;
@@ -89,7 +89,7 @@ public class AutoAttack : MonoBehaviour
 		if (direction.x > 0) sr.flipX = false;
 		else if (direction.x < 0) sr.flipX = true;
 	}
-	void StopAndAttack(Transform target) // 멈춰서 공격
+	void StopAndAttack(Transform target)         
 	{
 		anim.SetFloat("Speed", 0f);
 		timer += Time.deltaTime;
@@ -97,12 +97,12 @@ public class AutoAttack : MonoBehaviour
 		{
 			if (playerStats != null && playerStats.UseMana(attackManaCost))
 			{
-				PerformAttack(target); // 실제 공격 실행
+				PerformAttack(target);                 
 				timer = 0f;
 			}
 		}
 	}
-	void PerformAttack(Transform target)    // 공격
+	void PerformAttack(Transform target)          
 	{
 		if (target == null) return;
 		anim.SetTrigger("Attack");
@@ -112,12 +112,11 @@ public class AutoAttack : MonoBehaviour
 			enemy.TakeDamage(damage);
 		}
 	}
-	Transform GetNearestEnemy() //    가장 가까운 적 찾기
+	Transform GetNearestEnemy()
 	{
-		GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
 		Transform nearestEnemy = null;
 		float minDistance = Mathf.Infinity;
-		foreach (GameObject enemy in enemies)
+		foreach (Enemy enemy in Enemy.ActiveEnemies)
 		{
 			float distance = Vector2.Distance(transform.position, enemy.transform.position);
 			if (distance < minDistance && distance <= detectRange)
@@ -131,7 +130,7 @@ public class AutoAttack : MonoBehaviour
 	public void ToggleAutoAttack()
 	{
 		isAutoMode = !isAutoMode;
-		// 자동 모드가 꺼지면 속도 0으로 초기화
+
 		if (!isAutoMode) anim.SetFloat("Speed", 0f);
 	}
 }

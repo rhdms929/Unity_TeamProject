@@ -16,10 +16,12 @@ public class Enemy : PoolAble, IDamageable
 	public float deathDestroyDelay = 1.5f;
 
 	[Header("A* Pathfinding")]
-	public float nextWaypointDistance = 0.3f; // 다음 노드로 넘어가기 위한 거리
+	public float nextWaypointDistance = 0.3f; 
 	private Pathfinding pathfinding;
 	private List<Node> path;
 	private int targetIndex;
+
+	public static readonly List<Enemy> ActiveEnemies = new List<Enemy>();
 
     [Header("Drop")]
     [SerializeField] private string dropItemKey = "Coin";
@@ -33,24 +35,24 @@ public class Enemy : PoolAble, IDamageable
 	private Animator anim;
 	private SpriteRenderer sr;
 	private Collider2D col;
+	private PlayerStats playerStats;
 
 	private float attackTimer;
 	private int currentHP;
 	private bool isDead;
-    private bool hasDetectedPlayer; //플레이어를 감지했는지
-    private Coroutine returnCoroutine;  //	풀링 쓰면서 코루틴 함수
+    private bool hasDetectedPlayer;
+    private Coroutine returnCoroutine;  
 
-    [Header("Reward")] //경험치 보상
+    [Header("Reward")] 
     public int expReward = 10;
 
     [Header("Info")]
-    public string monsterName = "고블린";
+    public string monsterName = "癒몄돩猷�";
 
     [Header("Alert")]
-    public GameObject alertIcon;   // 느낌표 오브젝트
+    public GameObject alertIcon;  
 
-    [Header("Damage Text")] //적 위에 데미지 수치 보이게 하기
-    public GameObject damageTextPrefab;
+    [Header("Damage Text")]
     public Vector3 damageTextOffset = new Vector3(0, 1.2f, 0);
 
     private void Awake()
@@ -60,14 +62,15 @@ public class Enemy : PoolAble, IDamageable
 		sr = GetComponent<SpriteRenderer>();
 		col = GetComponent<Collider2D>();
 		pathfinding = FindObjectOfType<Pathfinding>();
+		playerStats = FindObjectOfType<PlayerStats>();
 	}
 
-	private void OnEnable() //OnEnable() -> 풀에서 꺼낼 때마다 실행해서 함수 바꿨으요잉~
+	private void OnEnable() 
 	{
 		currentHP = maxHP;
 		isDead = false;
 		attackTimer = 0f;
-		path = null; // 경로 초기화
+		path = null; 
         hasDetectedPlayer = false;
 
         if (rb != null)
@@ -90,13 +93,15 @@ public class Enemy : PoolAble, IDamageable
 			if (playerObj != null) target = playerObj.transform;
 		}
 
-		// 0.5초마다 경로를 갱신 -> 성능 최적화
+	
 		InvokeRepeating("UpdatePath", 0f, 0.5f);
+		ActiveEnemies.Add(this);
 	}
 
 	private void OnDisable()
 	{
 		CancelInvoke("UpdatePath");
+		ActiveEnemies.Remove(this);
         if (alertIcon != null)
             alertIcon.SetActive(false);
     }
@@ -107,7 +112,7 @@ public class Enemy : PoolAble, IDamageable
 
 		float distance = Vector2.Distance(transform.position, target.position);
 
-		// 감지 범위 내에 있을 때만 길을 찾기
+	
 		if (distance <= detectRange && distance > attackRange)
 		{
 			path = pathfinding.FindPath(transform.position, target.position);
@@ -128,14 +133,14 @@ public class Enemy : PoolAble, IDamageable
 
 		float distance = Vector2.Distance(transform.position, target.position);
 
-        // 처음 감지한 순간 느낌표 표시
+  
         if (distance <= detectRange && !hasDetectedPlayer)
         {
             hasDetectedPlayer = true;
             ShowAlert();
         }
 
-        // 감지 범위 밖 -> 느낌표 끄기
+
         if (distance > detectRange)
 		{
             hasDetectedPlayer = false;
@@ -147,7 +152,7 @@ public class Enemy : PoolAble, IDamageable
 			return;
 		}
 
-		// 공격
+
 		if (distance <= attackRange)
 		{
 			StopMoving();
@@ -155,7 +160,6 @@ public class Enemy : PoolAble, IDamageable
 			return;
 		}
 
-		// 추적 중 (A* 경로 따라가기)
 		FollowPath();
 	}
 
@@ -163,7 +167,7 @@ public class Enemy : PoolAble, IDamageable
 	{
 		if (path == null || targetIndex >= path.Count)
 		{
-			// 경로가 끝났는데도 플레이어가 멀리 있다면 다시 길찾기 시도
+
 			if (Vector2.Distance(transform.position, target.position) > attackRange)
 			{
 				UpdatePath();
@@ -172,18 +176,16 @@ public class Enemy : PoolAble, IDamageable
 		}
 
 		Vector3 targetWayPoint = path[targetIndex].worldPos;
-		// 적의 현재 위치에서 목표 노드를 향한 방향 계산
 
-		// 플레이어 방향을 바라보도록 flipX 설정 (노드 방향이 아니라 실제 플레이어 방향 기준)
 		Vector2 dirToPlayer = (target.position - transform.position).normalized;
 		sr.flipX = dirToPlayer.x < 0;
 
 		anim.SetFloat("Speed", 1f);
 
-		// 이동 처리
+
 		transform.position = Vector3.MoveTowards(transform.position, targetWayPoint, speed * Time.deltaTime);
 
-		// 현재 노드에 충분히 가까워지면 다음 노드로
+
 		if (Vector3.Distance(transform.position, targetWayPoint) < nextWaypointDistance)
 		{
 			targetIndex++;
@@ -209,7 +211,7 @@ public class Enemy : PoolAble, IDamageable
 		}
 		attackTimer = attackCooldown;
 	}
-    void ShowAlert() //!표시
+    void ShowAlert() 
     {
         if (alertIcon == null) return;
 
@@ -219,7 +221,7 @@ public class Enemy : PoolAble, IDamageable
     public void TakeDamage(int damage)
 	{
 		if (isDead) return;
-        ShowDamageText(damage); //데미지 수치 보이게 
+        ShowDamageText(damage); 
         currentHP -= damage;
 		if (currentHP <= 0) Die();
 	}
@@ -243,19 +245,18 @@ public class Enemy : PoolAble, IDamageable
 			anim.SetFloat("Speed", 0f);
 			anim.SetTrigger("Death");
 		}
-		if (alertIcon != null) //죽으면 ! 꺼주기
+		if (alertIcon != null) 
 		{
 			alertIcon.SetActive(false);
 		}
-        // 골드 소환은 코루틴에게 맡깁니다.
+
         returnCoroutine = StartCoroutine(ReturnToPoolAfterDelay());
 
-        PlayerStats PlayerStats = FindObjectOfType<PlayerStats>(); //적이 죽으면 경험치 보상
-        if (PlayerStats != null)
+        if (playerStats != null)
         {
-            PlayerStats.GainExp(expReward);
+            playerStats.GainExp(expReward);
         }
-		// 퀘스트 매니저에게 몬스터가 죽었다고 알리기
+
 		if (QuestManager.Instance != null)
 		{
 			QuestManager.Instance.OnMonsterKilled(gameObject.name);
@@ -263,10 +264,9 @@ public class Enemy : PoolAble, IDamageable
 	}
 	IEnumerator ReturnToPoolAfterDelay()
 	{
-		// deathDestroyDelay 시간만큼 기다립니다 (애니메이션 재생 시간 등)
+		// deathDestroyDelay 
 		yield return new WaitForSeconds(deathDestroyDelay);
 
-		// 골드 생성
 		GameObject dropItem = ObjectPoolManager.instance.GetGo(dropItemKey);
 		if (dropItem != null)
 		{
@@ -280,21 +280,16 @@ public class Enemy : PoolAble, IDamageable
                 goldItem.sourceMonsterName = monsterName;
             }
         }
-		// 20% 확률 포션 드랍
 		CheckPotionDrop();
-		// 적 오브젝트를 풀로 반환
 		ReleaseObject();
 	}
 
-    // 확률을 계산하고 아이템 슬롯에 직접 넣기
     void CheckPotionDrop()
     {
         if (InventoryManager.Instance == null) return;
 
-        // potionDropChance% 확률로 드랍
         if (Random.Range(0, 100) >= potionDropChance) return;
 
-        // 50% 확률로 HP / MP 포션 선택
         ItemData selectedPotion = (Random.Range(0, 2) == 0) ? hpPotionData : mpPotionData;
 
         if (selectedPotion == null) return;
@@ -302,7 +297,6 @@ public class Enemy : PoolAble, IDamageable
         InventoryManager.Instance.AddItem(selectedPotion, 1);
     }
 
-    // 적 범위 시각화입니당
     void OnDrawGizmosSelected()
 	{
 		Gizmos.color = Color.yellow;
@@ -310,7 +304,6 @@ public class Enemy : PoolAble, IDamageable
 		Gizmos.color = Color.red;
 		Gizmos.DrawWireSphere(transform.position, attackRange);
 
-		// 현재 경로 시각화 (디버그용)
 		if (path != null)
 		{
 			Gizmos.color = Color.cyan;
@@ -322,13 +315,17 @@ public class Enemy : PoolAble, IDamageable
 			}
 		}
 	}
-    void ShowDamageText(int damage) //적 데미지 수치 보이게
+    void ShowDamageText(int damage)
     {
-        if (damageTextPrefab == null) return;
+        if (ObjectPoolManager.instance == null) return;
 
-        GameObject textObj = Instantiate(damageTextPrefab, transform.position + damageTextOffset, Quaternion.identity);
+        GameObject textObj = ObjectPoolManager.instance.GetGo("DamageText");
+        if (textObj == null) return;
+
+        textObj.transform.position = transform.position + damageTextOffset;
+        textObj.transform.rotation = Quaternion.identity;
+
         DamageText damageText = textObj.GetComponent<DamageText>();
-
         if (damageText != null)
         {
             damageText.SetDamage(damage);

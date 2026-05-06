@@ -64,8 +64,18 @@ public class PathGrid : MonoBehaviour
 				int checkX = node.gridX + x;
 				int checkY = node.gridY + y;
 
-				if (checkX >= 0 && checkX < gridSizeX && checkY >= 0 && checkY < gridSizeY)
-					neighbors.Add(grid[checkX, checkY]);
+				if (checkX < 0 || checkX >= gridSizeX || checkY < 0 || checkY >= gridSizeY)
+					continue;
+
+				// 대각선 이동 시 옆 두 노드 중 하나라도 막혀 있으면 코너 커팅 차단
+				if (x != 0 && y != 0)
+				{
+					if (!grid[node.gridX + x, node.gridY].walkable ||
+						!grid[node.gridX, node.gridY + y].walkable)
+						continue;
+				}
+
+				neighbors.Add(grid[checkX, checkY]);
 			}
 		}
 		return neighbors;
